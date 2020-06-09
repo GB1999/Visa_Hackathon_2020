@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 
 import 'package:altruity/screens/discover_screen.dart';
 import 'package:altruity/providers/nonprofits.dart';
+import 'package:altruity/providers/nonprofit.dart';
+
 
 void main() {
   runApp(MyApp());

@@ -10,45 +10,32 @@ class SeachBarHeader extends SliverPersistentHeaderDelegate {
   });
   final double minExtent;
   final double maxExtent;
+  TextEditingController _searchQueryController = TextEditingController();
 
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Material(
-      child: Stack(
-        fit: StackFit.expand,
+      child: Column(
         children: [
-          Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  Color.fromRGBO(128, 175, 220, 100),
-                  Color.fromRGBO(128, 175, 220, titleOpacity(shrinkOffset))
-                ],
-                stops: [0.5, 1.0],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                tileMode: TileMode.repeated,
-              ),
-            ),
-          ),
           Padding(
             padding: const EdgeInsets.all(10.0),
-            child: Container(
-              height: 10,
-              width: 300,
-
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(30.0),
+            child: TextField(
+              controller: _searchQueryController,
+              autofocus: true,
+              decoration: InputDecoration(
+                icon: Icon(Icons.search),
+                hintText: "Search Data...",
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(30)),
+                hintStyle: TextStyle(color: Colors.white30),
               ),
+              style: TextStyle(color: Colors.white, fontSize: 10.0),
             ),
           ),
-          Positioned(
-            left: 200.0,
-            right: 16.0,
-            bottom: 5.0,
+          Flexible(
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
                 Text(
                   'Sort',
@@ -56,22 +43,16 @@ class SeachBarHeader extends SliverPersistentHeaderDelegate {
                     color: Colors.black.withOpacity(titleOpacity(shrinkOffset)),
                   ),
                 ),
-                IconButton(
-                  onPressed: () {},
-                  icon: Icon(Icons.swap_vert),
-                  color: Colors.black.withOpacity(titleOpacity(shrinkOffset)),
-                ),
+                Icon(Icons.swap_vert, color: Colors.black.withOpacity(titleOpacity(shrinkOffset)),),
+                 // color: Colors.black.withOpacity(titleOpacity(shrinkOffset)),
+                
                 Text(
                   'Filters',
                   style: TextStyle(
                     color: Colors.black.withOpacity(titleOpacity(shrinkOffset)),
                   ),
                 ),
-                IconButton(
-                  onPressed: () {},
-                  icon: Icon(Icons.list),
-                  color: Colors.black.withOpacity(titleOpacity(shrinkOffset)),
-                ),
+                Icon(Icons.list),
               ],
             ),
           ),
