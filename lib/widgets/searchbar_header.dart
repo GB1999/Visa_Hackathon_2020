@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:altruity/widgets/app_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
@@ -16,8 +17,9 @@ class SeachBarHeader extends SliverPersistentHeaderDelegate {
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Material(
-      child: Column(
+      child: Stack(
         children: [
+          Drawer(),
           Padding(
             padding: const EdgeInsets.all(10.0),
             child: TextField(

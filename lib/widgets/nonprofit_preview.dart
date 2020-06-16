@@ -17,10 +17,10 @@ class NonprofitPreview extends StatelessWidget {
             children: <Widget>[
               Container(
                 height: 150,
-                width: double.infinity,
+                //width: double.infinity,
                 child: nonprofit.imageUrls.isNotEmpty
                     ? Padding(
-                        padding: const EdgeInsets.all(10.0),
+                        padding: const EdgeInsets.all(20.0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
@@ -55,7 +55,8 @@ class NonprofitPreview extends StatelessWidget {
                                         ),
                                       ),
                                       Container(
-                                        margin: EdgeInsets.all(3.0),
+                                        margin: EdgeInsets.fromLTRB(
+                                                0.0, 3.0, 0.0, 3.0),
                                         width: 200,
                                         height: 20,
                                         child: ListView.builder(

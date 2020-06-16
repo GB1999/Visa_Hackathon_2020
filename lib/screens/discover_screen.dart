@@ -18,17 +18,107 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
     final nonprofits = nonprofitData.nonprofits;
 
     return SafeArea(
-          child: Scaffold(
+      child: Scaffold(
+        drawer: Drawer(
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: <Widget>[
+              DrawerHeader(
+                child: drawerProfile(
+                    'Gage Benham',
+                    'https://images.unsplash.com/photo-1511367461989-f85a21fda167?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80',
+                    ),
+                decoration: BoxDecoration(
+                    //color: Colors.blue,
+                    ),
+              ),
+              customListTile(
+                40,
+                'Donation History',
+                Icons.description,
+                -1.3,
+                '/Donation_History',
+              ),
+              customListTile(
+                40,
+                'Bookmarked',
+                Icons.bookmark_border,
+                -1.3,
+                '/Bookmarked',
+              ),
+              customListTile(
+                40,
+                'Payment Options',
+                Icons.credit_card,
+                -1.3,
+                '/Payment_Options',
+              ),
+              Divider(
+                height: 20,
+              ),
+              customListTile(
+                40,
+                'Settings',
+                Icons.settings,
+                -1.3,
+                '/Settings',
+              ),
+              customListTile(
+                40,
+                'Notifications',
+                Icons.notifications,
+                -1.3,
+                '/Notifications',
+              ),
+              Divider(),
+              customListTile(
+                40,
+                'Terms of Service',
+                Icons.description,
+                -1.3,
+                '/Terms_of_Service',
+              ),
+              customListTile(
+                40,
+                'Privacy Policy',
+                Icons.description,
+                -1.3,
+                '/Privacy_Policy',
+              ),
+              Divider(),
+              customListTile(
+                40,
+                'Sign Out',
+                Icons.exit_to_app,
+                -1.3,
+                '/Sign_Out',
+              ),
+            ],
+          ),
+        ),
+        appBar: AppBar(
+          iconTheme: new IconThemeData(color: Colors.black38),
+          actions: <Widget>[
+            Align(
+              child: Text(
+                'Search',
+                style: TextStyle(color: Colors.black38),
+              ),
+              alignment: Alignment.center,
+            ),
+            IconButton(
+              icon: Icon(
+                Icons.search,
+                color: Colors.black38,
+              ),
+              onPressed: () {},
+            ),
+          ],
+          backgroundColor: Colors.white,
+          elevation: 1,
+        ),
         body: CustomScrollView(
           slivers: <Widget>[
-            SliverPersistentHeader(
-              pinned: true,
-              floating: true,
-              delegate: SeachBarHeader(
-                minExtent: 75,
-                maxExtent: 125,
-              ),
-            ),
             SliverList(
               delegate: SliverChildListDelegate([FeaturedCarousel()]),
             ),
@@ -43,33 +133,48 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
             ),
           ],
         ),
-        bottomNavigationBar: BottomNavigationBar(
-          items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              title: Text('Home'),
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.business),
-              title: Text('Business'),
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.school),
-              title: Text('School'),
-            ),
-          ],
-          currentIndex: _selectedIndex,
-          selectedItemColor: Colors.amber[800],
-          onTap: _onItemTapped,
-        ),
       ),
     );
   }
 
-  int _selectedIndex = 0;
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+  Widget drawerProfile(String name, String profileUrl) {
+    return 
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        CircleAvatar(
+          radius: 30.0,
+          backgroundImage: NetworkImage(profileUrl),
+          backgroundColor: Colors.transparent,
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(name, style: TextStyle(fontSize: 20)),
+        ),
+      ],
+    );
+  }
+
+  Widget customListTile(double height, String title, IconData iconData,
+      double alignment, String routeName) {
+    return Container(
+      height: height,
+      margin: EdgeInsets.all(10),
+      child: ListTile(
+        title: Text(title),
+        leading: Padding(
+          padding: const EdgeInsets.fromLTRB(0, 2, 0, 0),
+          child: Icon(
+            iconData,
+            size: 18,
+            color: Colors.black,
+          ),
+        ),
+        onTap: () {
+          Navigator.pushNamed(context, routeName);
+        },
+      ),
+    );
   }
 }
