@@ -10,7 +10,7 @@ After two taps, the donation is processed.
 
 /* these are the possible states for each donation amount option
     SELECTION STATES:
-        0 => default -- no donation amount has been selected
+        0 => default -- donation amount has been selected
         1 => donation amount has been selected but not confirmed
         2 => donation amount has been confirmed
   */
