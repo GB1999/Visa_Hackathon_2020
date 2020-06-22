@@ -6,8 +6,7 @@ The user must tap the desired donation amount, they will then be prompted to con
 After two taps, the donation is processed.
 */
 
-// TODO figure out how we want to implement the "monthly" payment option
-// TODO add an option to donate a custom amount??
+//TODO implement payment --  right now confirming donation amount does nothing
 
 /* these are the possible states for each donation amount option
     SELECTION STATES:
@@ -18,18 +17,28 @@ After two taps, the donation is processed.
 
 class DonationSelection extends StatefulWidget {
   @override
-  _DonationSelectionState createState() =>
-      _DonationSelectionState();
+  _DonationSelectionState createState() => _DonationSelectionState();
 }
 
 class _DonationSelectionState extends State<DonationSelection> {
-  var _selectionState = [0, 0, 0, 0, 0]; //keeps track of the state of each option
+  var _selectionState = [
+    0,
+    0,
+    0,
+    0,
+    0
+  ]; //keeps track of the state of each option
   var _index = 0; //keeps track of which option has been tapped
 
-  void _updateSelection(int i, int state) { //'state' will either be 0, 1, or 2 (see "selection states" key for details)
+  void _updateSelection(int index, int state) {
+    //'state' will either be 0, 1, or 2 (see "selection states" key for details)
     setState(() {
-      _index = i;
-      _selectionState[i] = state;
+      //the index of the option last tapped is referenced in the widget to highlight the selected donation option and changed instruction text
+      _index = index;
+
+      //need to reset the selection state list to state 0 except for the option last tapped which will be updated to the next state
+      _selectionState = [0, 0, 0, 0, 0];
+      _selectionState[index] = state;
     });
   }
 
@@ -38,11 +47,14 @@ class _DonationSelectionState extends State<DonationSelection> {
     return Material(
       child: Column(
         children: <Widget>[
-          Text("Show your support:",
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
-              )),
+          Text(
+            "Show your support:",
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          //instructions for user will depend on whether they have selected an option yet
           _selectionState[_index] == 1
               ? Text(
                   "Tap amount again to confirm selection",
@@ -58,6 +70,8 @@ class _DonationSelectionState extends State<DonationSelection> {
                     fontStyle: FontStyle.italic,
                   ),
                 ),
+          //DONATION OPTIONS
+          //if any options need to be added or removed -- keep the list length in mind! It is hardcoded at length = 5 currently. update if necessary
           Row(
             children: <Widget>[
               // $5 DONATION OPTION
@@ -117,6 +131,7 @@ class _DonationSelectionState extends State<DonationSelection> {
                 ),
               ),
               //MONTHLY DONATION OPTION
+              // TODO figure out how we want to implement the "monthly" payment option
               GestureDetector(
                 onTap: () {
                   if (_selectionState[4] != 2) {
@@ -130,6 +145,7 @@ class _DonationSelectionState extends State<DonationSelection> {
                       : Colors.white,
                 ),
               ),
+              // TODO add an option to donate a custom amount??
             ],
           ),
         ],
