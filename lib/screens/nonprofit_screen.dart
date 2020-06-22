@@ -120,7 +120,7 @@ class _NonProfitScreenState extends State<NonProfitScreen> {
               ),
             ),
 
-            ///DONATION OPTIONS -- FIXED TO BOTTOM OF SCREEN TO STAY IN PLACE WHEN SCROLLING?
+            ///DONATION OPTIONS
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: DonationSelection(),
