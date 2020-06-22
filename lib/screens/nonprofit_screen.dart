@@ -14,18 +14,18 @@ import 'package:altruity/providers/nonprofit.dart';
                             $5 $10 $20 $50 Monthly => $____ donation sent + confetti graphic OR ??? pop up to customize monthly amount ???
 */
 
-class NonProfitSelectedScreen extends StatefulWidget {
+class NonProfitScreen extends StatefulWidget {
   // the nonprofit selected from the previous screen is needed to pull the info from the Nonprofits list
   final Nonprofit selected;
 
-  NonProfitSelectedScreen(this.selected);
+  NonProfitScreen(this.selected);
 
   @override
-  _NonProfitSelectedScreenState createState() =>
-      _NonProfitSelectedScreenState();
+  _NonProfitScreenState createState() =>
+      _NonProfitScreenState();
 }
 
-class _NonProfitSelectedScreenState extends State<NonProfitSelectedScreen> {
+class _NonProfitScreenState extends State<NonProfitScreen> {
   @override
   Widget build(BuildContext context) {
     return Material(
