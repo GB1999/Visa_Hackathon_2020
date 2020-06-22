@@ -46,33 +46,30 @@ class _DonationSelectionState extends State<DonationSelection> {
   Widget build(BuildContext context) {
     return Material(
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
-          Text(
-            "Show your support:",
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          //instructions for user will depend on whether they have selected an option yet
+          Text("Show your support:",
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              )),
           _selectionState[_index] == 1
               ? Text(
-                  "Tap amount again to confirm selection",
+                  "Tap amount again to confirm selection\n",
                   style: TextStyle(
-                    fontSize: 10,
+                    fontSize: 14,
                     fontStyle: FontStyle.italic,
                   ),
                 )
               : Text(
-                  "Tap to select donation amount",
+                  "Tap to select donation amount\n",
                   style: TextStyle(
-                    fontSize: 10,
+                    fontSize: 12,
                     fontStyle: FontStyle.italic,
                   ),
                 ),
-          //DONATION OPTIONS
-          //if any options need to be added or removed -- keep the list length in mind! It is hardcoded at length = 5 currently. update if necessary
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
               // $5 DONATION OPTION
               GestureDetector(
@@ -82,7 +79,12 @@ class _DonationSelectionState extends State<DonationSelection> {
                   }
                 },
                 child: Container(
-                  child: Text("\$5"),
+                  child: Text("\$5",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      ),
                   color: _selectionState[0] != 0
                       ? Colors.amber[800]
                       : Colors.white,
@@ -96,7 +98,13 @@ class _DonationSelectionState extends State<DonationSelection> {
                   }
                 },
                 child: Container(
-                  child: Text("\$10"),
+                  child: Text(
+                    "\$10",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                   color: _selectionState[1] != 0
                       ? Colors.amber[800]
                       : Colors.white,
@@ -110,7 +118,13 @@ class _DonationSelectionState extends State<DonationSelection> {
                   }
                 },
                 child: Container(
-                  child: Text("\$20"),
+                  child: Text(
+                    "\$20",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                   color: _selectionState[2] != 0
                       ? Colors.amber[800]
                       : Colors.white,
@@ -124,7 +138,13 @@ class _DonationSelectionState extends State<DonationSelection> {
                   }
                 },
                 child: Container(
-                  child: Text("\$50"),
+                  child: Text(
+                    "\$50",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                   color: _selectionState[3] != 0
                       ? Colors.amber[800]
                       : Colors.white,
@@ -139,7 +159,13 @@ class _DonationSelectionState extends State<DonationSelection> {
                   }
                 },
                 child: Container(
-                  child: Text("Monthly"),
+                  child: Text(
+                    "Monthly",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                   color: _selectionState[4] != 0
                       ? Colors.amber[800]
                       : Colors.white,
