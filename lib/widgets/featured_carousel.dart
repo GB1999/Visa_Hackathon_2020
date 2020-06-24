@@ -4,6 +4,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:carousel_slider/carousel_options.dart';
 
 import 'package:altruity/providers/nonprofits.dart';
+import 'package:altruity/screens/nonprofit_screen.dart';
 import 'package:provider/provider.dart';
 
 class FeaturedCarousel extends StatefulWidget {
@@ -107,7 +108,7 @@ class _FeaturedCarouselState extends State<FeaturedCarousel> {
                                   width:double.infinity),
                             ),
                           ),
-                          onTap: (){print('Tapped featured charity');},
+                          onTap: (){Navigator.push(context, MaterialPageRoute(builder: (context) => NonProfitScreen(nonprof)));},
                         ),
                       ),
                       Padding(
