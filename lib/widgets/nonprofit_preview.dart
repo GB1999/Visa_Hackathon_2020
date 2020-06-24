@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
 import 'package:altruity/providers/nonprofit.dart';
+import 'package:altruity/screens/nonprofit_screen.dart';
 
 class NonprofitPreview extends StatelessWidget {
   @override
@@ -10,7 +11,9 @@ class NonprofitPreview extends StatelessWidget {
     final nonprofit = Provider.of<Nonprofit>(context, listen: false);
     return Material(
       child: InkWell(
-        onDoubleTap: () {},
+        onTap: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => NonProfitScreen(nonprofit)));
+        },
         child: Container(
           width: double.infinity,
           child: Column(
