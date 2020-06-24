@@ -28,8 +28,33 @@ class MyApp extends StatelessWidget {
         builder: (ctx, auth, _) => MaterialApp(
           title: 'Visa Gives',
           theme: ThemeData(
-            primarySwatch: Colors.blue,
-            visualDensity: VisualDensity.adaptivePlatformDensity,
+            primaryColor: Color.fromRGBO(26, 31, 113, 100),
+            accentColor: Color.fromRGBO(247, 182, 0, 100),
+            splashColor: Color.fromRGBO(27, 138, 241, 100),
+            fontFamily: 'OpenSans',
+            textTheme: TextTheme(
+              headline1: TextStyle(
+                fontSize: 20,
+                fontFamily: 'Montserrat',
+                fontWeight: FontWeight.w700,
+              ),
+              headline2: TextStyle(
+                fontSize: 20,
+                fontFamily: 'OpenSans',
+                fontWeight: FontWeight.w400,
+              ),
+              bodyText1: TextStyle(
+                fontSize: 20,
+                fontFamily: 'OpenSans',
+                fontWeight: FontWeight.w300,
+              ),
+              bodyText2: TextStyle(
+                fontSize: 20,
+                fontFamily: 'OpenSans',
+                fontWeight: FontWeight.w300,
+                color: Colors.black26
+              ),
+            ),
           ),
           // check if user is authenticated, if not send to authentication screen
           home: auth.isAuth ? DiscoverScreen() : AuthenticationScreen(),
