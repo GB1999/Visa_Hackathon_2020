@@ -8,6 +8,7 @@ class Nonprofit with ChangeNotifier {
   final String id;
   final String title;
   final String description;
+  final String expenditures;
   final String coverPhoto;
   final List<String> additionalPhotos;
   final List<String> tags;
@@ -16,6 +17,7 @@ class Nonprofit with ChangeNotifier {
     @required this.id,
     @required this.title,
     @required this.description,
+    @required this.expenditures,
     @required this.coverPhoto,
     @required this.additionalPhotos,
     @required this.tags,
@@ -25,7 +27,7 @@ class Nonprofit with ChangeNotifier {
       double donationAmount, String token, String userId) async {
     final timeStamp = DateTime.now();
     final url =
-        'https://shopapp-89d99.firebaseio.com/users/$userId/donated_charities/$id.json?auth=$token';
+        'https://visacharity.firebaseio.com/users/$userId/donated_charities/$id.json?auth=$token';
     try {
       final response = await http.put(
         url,

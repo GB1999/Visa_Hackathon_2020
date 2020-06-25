@@ -21,13 +21,13 @@ class NonprofitPreview extends StatelessWidget {
           width: double.infinity,
           child: Column(
             children: <Widget>[
-              Container(
-                height: 150,
-                //width: double.infinity,
-                child: nonprofit.coverPhoto.isNotEmpty
-                    ? Padding(
-                        padding: const EdgeInsets.all(20.0),
-                        child: Row(
+              Padding(
+                padding: EdgeInsets.fromLTRB(20.0, 5.0, 20.0, 0.0),
+                child: Container(
+                  height: 120,
+                  //width: double.infinity,
+                  child: nonprofit.coverPhoto.isNotEmpty
+                      ? Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
                             Image.network(
@@ -38,7 +38,7 @@ class NonprofitPreview extends StatelessWidget {
                             ),
                             Expanded(
                               child: Padding(
-                                padding: const EdgeInsets.all(20.0),
+                                padding: EdgeInsets.fromLTRB(10.0, 5.0, 0.0, 0.0),
                                 child: Container(
                                   alignment: Alignment.centerLeft,
                                   height: double.infinity,
@@ -58,7 +58,7 @@ class NonprofitPreview extends StatelessWidget {
                                       ),
                                       Container(
                                         margin: EdgeInsets.fromLTRB(
-                                            0.0, 3.0, 0.0, 3.0),
+                                            0.0, 3.0, 0.0, 0.0),
                                         width: 200,
                                         height: 20,
                                         child: ListView.builder(
@@ -74,8 +74,7 @@ class NonprofitPreview extends StatelessWidget {
                                                         10.0, 0.0, 10.0, 0.0),
                                                 child: Text(
                                                   nonprofit.tags[i],
-                                                  style:
-                                                      TextStyle(fontSize: 10),
+                                                  style: Theme.of(context).textTheme.subtitle2,
                                                 ),
                                               ),
                                               //margin: EdgeInsets.all(3.0),
@@ -87,6 +86,15 @@ class NonprofitPreview extends StatelessWidget {
                                             ),
                                           ),
                                         ),
+                                      ),
+                                      Text(
+                                        (nonprofit.expenditures != null)
+                                            ? nonprofit.expenditures
+                                            : " ",
+                                        style:
+                                            Theme.of(context).textTheme.subtitle1,
+                                        maxLines: 3,
+                                        overflow: TextOverflow.ellipsis,
                                       )
                                     ],
                                   ),
@@ -94,14 +102,14 @@ class NonprofitPreview extends StatelessWidget {
                               ),
                             ),
                           ],
+                        )
+                      : Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(
+                            child: Text(nonprofit.description),
+                          ),
                         ),
-                      )
-                    : Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Container(
-                          child: Text(nonprofit.description),
-                        ),
-                      ),
+                ),
               ),
             ],
           ),

@@ -12,12 +12,11 @@ class DiscoverScreen extends StatefulWidget {
 }
 
 class _DiscoverScreenState extends State<DiscoverScreen> {
-
   var _isInit = true;
 
   @override
   void didChangeDependencies() {
-    if(_isInit){
+    if (_isInit) {
       Provider.of<Nonprofits>(context).fetchNonProfits();
     }
     _isInit = false;
@@ -34,13 +33,14 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
       child: Scaffold(
         drawer: Drawer(
           child: ListView(
+            //physics: const AlwaysScrollableScrollPhysics(),
             padding: EdgeInsets.zero,
             children: <Widget>[
               DrawerHeader(
                 child: drawerProfile(
-                    'Gage Benham',
-                    'https://images.unsplash.com/photo-1511367461989-f85a21fda167?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80',
-                    ),
+                  'Gage Benham',
+                  'https://images.unsplash.com/photo-1511367461989-f85a21fda167?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80',
+                ),
                 decoration: BoxDecoration(
                     //color: Colors.blue,
                     ),
@@ -130,31 +130,37 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
           backgroundColor: Colors.white,
           elevation: 1,
         ),
-        body: CustomScrollView(
-          slivers: <Widget>[
-            SliverList(
-              delegate: SliverChildListDelegate([FeaturedCarousel()]),
-            ),
-            SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (context, i) => ChangeNotifierProvider.value(
-                  value: nonprofits[i],
-                  child: NonprofitPreview(),
-                ),
-                childCount: nonprofits.length,
+        body: RefreshIndicator(
+          onRefresh: () async {
+            Provider.of<Nonprofits>(context).fetchNonProfits();
+            setState(() {
+            });
+          },
+          child: CustomScrollView(
+            slivers: <Widget>[
+              SliverList(
+                delegate: SliverChildListDelegate([FeaturedCarousel()]),
               ),
-            ),
-          ],
+              SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, i) => ChangeNotifierProvider.value(
+                    value: nonprofits[i],
+                    child: NonprofitPreview(),
+                  ),
+                  childCount: nonprofits.length,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
   Widget drawerProfile(String name, String profileUrl) {
-    return 
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         CircleAvatar(
           radius: 30.0,

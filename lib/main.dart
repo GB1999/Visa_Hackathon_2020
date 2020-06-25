@@ -59,6 +59,18 @@ class MyApp extends StatelessWidget {
                 fontWeight: FontWeight.w300,
                 color: Colors.black26,
               ),
+              subtitle1: TextStyle(
+                fontSize: 12,
+                fontFamily: 'OpenSans',
+                fontWeight: FontWeight.w300,
+                color: Colors.black45,
+              ),
+              subtitle2: TextStyle(
+                fontSize: 12,
+                fontFamily: 'OpenSans',
+                fontWeight: FontWeight.w300,
+                color: Colors.black,
+              ),
             ),
           ),
           // check if user is authenticated, if not send to authentication screen

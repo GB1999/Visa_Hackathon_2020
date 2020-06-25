@@ -17,4 +17,5 @@ class User with ChangeNotifier{
     @required this.password,
     @required this.profilePicture,
   });
+  
 }

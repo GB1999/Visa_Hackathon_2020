@@ -56,7 +56,7 @@ class _FeaturedCarouselState extends State<FeaturedCarousel> {
                 ),
                 Positioned(
                   bottom: 140,
-                  left: 130,
+                  left: (MediaQuery.of(context).size.width-40)/2,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: featuredNonprofits.map((nonprof) {
