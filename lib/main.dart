@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (ctx) => Nonprofits(),
+          create: (ctx) => Nonprofits(null, null, []),
         ),
         ChangeNotifierProvider(
           create: (ctx) => Auth(),
@@ -28,23 +28,28 @@ class MyApp extends StatelessWidget {
         builder: (ctx, auth, _) => MaterialApp(
           title: 'Visa Gives',
           theme: ThemeData(
-            primaryColor: Color.fromRGBO(26, 31, 113, 100),
+            //primaryColor: Color.fromRGBO(26, 31, 113, 100),
             accentColor: Color.fromRGBO(247, 182, 0, 100),
             splashColor: Color.fromRGBO(27, 138, 241, 100),
+            
             fontFamily: 'OpenSans',
+
             textTheme: TextTheme(
               headline1: TextStyle(
-                fontSize: 20,
+                color: Colors.black,
+                fontSize: 24,
                 fontFamily: 'Montserrat',
                 fontWeight: FontWeight.w700,
               ),
               headline2: TextStyle(
+                color: Colors.black,
                 fontSize: 20,
                 fontFamily: 'OpenSans',
                 fontWeight: FontWeight.w400,
               ),
               bodyText1: TextStyle(
-                fontSize: 20,
+                color: Colors.black,
+                fontSize: 16,
                 fontFamily: 'OpenSans',
                 fontWeight: FontWeight.w300,
               ),
@@ -52,7 +57,7 @@ class MyApp extends StatelessWidget {
                 fontSize: 20,
                 fontFamily: 'OpenSans',
                 fontWeight: FontWeight.w300,
-                color: Colors.black26
+                color: Colors.black26,
               ),
             ),
           ),

@@ -19,24 +19,21 @@ class _FeaturedCarouselState extends State<FeaturedCarousel> {
 
   @override
   Widget build(BuildContext context) {
-    final double height = MediaQuery.of(context).size.height;
     final featuredNonprofitsData =
         Provider.of<Nonprofits>(context, listen: false);
     final featuredNonprofits = featuredNonprofitsData.nonprofits;
     return Material(
       child: Container(
-        height: 325,
+        height: 400,
         child: Column(
           children: <Widget>[
             Padding(
-              padding: const EdgeInsets.fromLTRB(20.0, 10.0, 0.0, 10.0),
+              padding: const EdgeInsets.fromLTRB(20.0, 10.0, 0.0, 5.0),
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
                   'Featured',
-                  style: TextStyle(
-                    fontSize: 20,
-                  ),
+                  style: Theme.of(context).textTheme.headline2,
                 ),
               ),
             ),
@@ -48,9 +45,8 @@ class _FeaturedCarouselState extends State<FeaturedCarousel> {
                       height: 400,
                       autoPlay: true,
                       enlargeCenterPage: false,
-                      aspectRatio:2.0,
-                      viewportFraction: 1
-                      ,
+                      aspectRatio: 2.0,
+                      viewportFraction: 1,
                       autoPlayInterval: Duration(seconds: 5),
                       onPageChanged: (index, reason) {
                         setState(() {
@@ -59,7 +55,7 @@ class _FeaturedCarouselState extends State<FeaturedCarousel> {
                       }),
                 ),
                 Positioned(
-                  bottom: 110,
+                  bottom: 140,
                   left: 130,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -88,61 +84,64 @@ class _FeaturedCarouselState extends State<FeaturedCarousel> {
     );
   }
 
-  List<Widget> _getCarouselWidgets(List<Nonprofit> featuredNonprofits, BuildContext context) {
+  List<Widget> _getCarouselWidgets(
+      List<Nonprofit> featuredNonprofits, BuildContext context) {
     return featuredNonprofits
         .map(
           (nonprof) => Padding(
             padding: const EdgeInsets.all(8.0),
             child: Container(
               child: Column(
-                    children: <Widget>[
-                      Expanded(
-                                          child: InkWell(
-                          child: Container(
-                            margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                              child: Image.network(nonprof.imageUrls[0],
-                                  fit: BoxFit.cover,
-                                  height: 175,
-                                  width:double.infinity),
-                            ),
-                          ),
-                          onTap: (){Navigator.push(context, MaterialPageRoute(builder: (context) => NonProfitScreen(nonprof)));},
-                        ),
+                children: <Widget>[
+                  Expanded(
+                    child: InkWell(
+                      child: Container(
+                        margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                        child:  Image.network(nonprof.coverPhoto,
+                              fit: BoxFit.cover,
+                              //height: 100,
+                              width: double.infinity),
+                        
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              nonprof.title,
-                              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            )),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                        child: Text(
-                          nonprof.description,
-                          style: TextStyle(fontSize: 14),
-                          maxLines: 4,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ],
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    NonProfitScreen(nonprof)));
+                      },
+                    ),
                   ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          nonprof.title,
+                          style: Theme.of(context).textTheme.headline1,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        )),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                    child: Text(
+                      nonprof.description,
+                      style: Theme.of(context).textTheme.bodyText1,
+                      maxLines: 4,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-            
-          
         )
         .toList();
-        // Container(
-        //       child: Center(
-        //         child: Image.network(nonprof.imageUrls[0], fit: BoxFit.cover, height: 175,)
-        //       ),
-        //     )).toList();
+    // Container(
+    //       child: Center(
+    //         child: Image.network(nonprof.imageUrls[0], fit: BoxFit.cover, height: 175,)
+    //       ),
+    //     )).toList();
   }
 }

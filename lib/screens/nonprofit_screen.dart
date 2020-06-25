@@ -33,15 +33,15 @@ class _NonProfitScreenState extends State<NonProfitScreen> {
       child: SafeArea(
         child: Scaffold(
           appBar: AppBar(
-          iconTheme: new IconThemeData(color: Colors.black38),
-          leading: BackButton(),
-          backgroundColor: Colors.white,
-          elevation: 1,
-        ),
+            iconTheme: new IconThemeData(color: Colors.black38),
+            leading: BackButton(),
+            backgroundColor: Colors.white,
+            elevation: 1,
+          ),
           body: Column(
             children: [
               ///BACK BUTTON -- returns to previous page (if there was no previous page it will not do anything)
-            
+
               ///NONPROFIT NAME
               Padding(
                 padding: const EdgeInsets.fromLTRB(13.0, 0.0, 0.0, 0.0),
@@ -63,11 +63,11 @@ class _NonProfitScreenState extends State<NonProfitScreen> {
                 child: Column(
                   children: <Widget>[
                     //image
-                    widget.selected.imageUrls.isNotEmpty
+                    widget.selected.coverPhoto.isNotEmpty
                         ? ClipRRect(
                             borderRadius: BorderRadius.circular(10),
                             child: Image.network(
-                              widget.selected.imageUrls[0],
+                              widget.selected.coverPhoto,
                               fit: BoxFit.cover,
                             ),
                           )
@@ -79,8 +79,10 @@ class _NonProfitScreenState extends State<NonProfitScreen> {
                             ),
                           ),
                     //tags
-                    SizedBox(
-                      height: 10.0,
+                    Container(
+                      margin: EdgeInsets.fromLTRB(0.0, 3.0, 0.0, 3.0),
+                      width: 200,
+                      height: 20,
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
                         itemCount: widget.selected.tags.length,
@@ -96,14 +98,15 @@ class _NonProfitScreenState extends State<NonProfitScreen> {
                                 style: TextStyle(fontSize: 10),
                               ),
                             ),
+                            //margin: EdgeInsets.all(3.0),
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
-                                color: Colors.grey,
+                                color: Colors.black12,
                                 borderRadius: BorderRadius.circular(4)),
                           ),
                         ),
                       ),
-                    ),
+                    )
                   ],
                 ),
               ),
@@ -128,13 +131,26 @@ class _NonProfitScreenState extends State<NonProfitScreen> {
 
               ///DONATION OPTIONS
               Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: DonationSelection(),
-              )
+                  padding: const EdgeInsets.all(8.0),
+                  child: FlatButton(
+                    color: Color.fromRGBO(247, 182, 0, 100),
+                    child: Text('Donate Now'),
+                    onPressed: () => _showDonationOptions(),
+                  )
+                  //DonationSelection(),
+                  )
             ],
           ),
         ),
       ),
     );
+  }
+
+  void _showDonationOptions() {
+    showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return DonationSelection();
+        });
   }
 }

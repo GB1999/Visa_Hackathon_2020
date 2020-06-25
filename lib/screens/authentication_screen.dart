@@ -105,7 +105,7 @@ class _AuthCardState extends State<AuthCard> {
         await Provider.of<Auth>(context, listen: false).signup(
           _authData['email'],
           _authData['password'],
-        );
+        ); 
       }
     } on HttpException catch (error) {
       var errorMessage = 'Authentication failed';
@@ -171,19 +171,21 @@ class _AuthCardState extends State<AuthCard> {
               children: <Widget>[
                 (_authMode == AuthMode.Signup)
                     ? ClipRRect(
-                      borderRadius: BorderRadius.circular(15),
+                        borderRadius: BorderRadius.circular(15),
                         child: Container(
                           width: 160,
                           height: 160,
                           color: Colors.black38,
-                          
-                              child: (_image == null)
-                                  ? IconButton(
-                                      icon: Icon(Icons.camera_alt),
-                                      // open file brower to select profile image from device
-                                      onPressed: () => _getProfileImage(),
-                                    )
-                                  : Image.file(_image, fit: BoxFit.cover,),
+                          child: (_image == null)
+                              ? IconButton(
+                                  icon: Icon(Icons.camera_alt),
+                                  // open file brower to select profile image from device
+                                  onPressed: () => _getProfileImage(),
+                                )
+                              : Image.file(
+                                  _image,
+                                  fit: BoxFit.cover,
+                                ),
                         ),
                       )
                     : Text('Welcome Back'),
