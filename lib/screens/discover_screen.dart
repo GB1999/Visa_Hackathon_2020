@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:altruity/providers/nonprofits.dart';
+import 'package:altruity/providers/user.dart';
 import 'package:altruity/widgets/searchbar_header.dart';
 import 'package:altruity/widgets/nonprofit_preview.dart';
 import 'package:altruity/widgets/featured_carousel.dart';
@@ -17,7 +18,10 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
   @override
   void didChangeDependencies() {
     if (_isInit) {
+      Provider.of<User>(context).fetchUserData();
       Provider.of<Nonprofits>(context).fetchNonProfits();
+      
+      print('Provider data fetched');
     }
     _isInit = false;
     // TODO: implement didChangeDependencies
@@ -29,6 +33,8 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
     final nonprofitData = Provider.of<Nonprofits>(context);
     final nonprofits = nonprofitData.nonprofits;
 
+    final userData = Provider.of<User>(context);
+
     return SafeArea(
       child: Scaffold(
         drawer: Drawer(
@@ -38,8 +44,8 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
             children: <Widget>[
               DrawerHeader(
                 child: drawerProfile(
-                  'Gage Benham',
-                  'https://images.unsplash.com/photo-1511367461989-f85a21fda167?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80',
+                  userData.name,
+                  userData.profilePicture,
                 ),
                 decoration: BoxDecoration(
                     //color: Colors.blue,

@@ -23,7 +23,6 @@ class Nonprofits with ChangeNotifier {
       }
 
       final List<Nonprofit> loadedNonprofits = [];
-      print(extractedData);
       extractedData.forEach((nonprofId, nonprofData) {
         loadedNonprofits.add(
           Nonprofit(
@@ -40,7 +39,6 @@ class Nonprofits with ChangeNotifier {
 
       _nonprofits = loadedNonprofits;
       notifyListeners();
-      print(response);
     } catch (error) {
       throw (error);
     }

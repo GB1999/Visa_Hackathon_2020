@@ -1,9 +1,10 @@
+import 'package:altruity/providers/user.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:altruity/screens/discover_screen.dart';
 import 'package:altruity/providers/nonprofits.dart';
-import 'package:altruity/providers/nonprofit.dart';
+import 'package:altruity/providers/user.dart';
 import 'package:altruity/providers/auth.dart';
 import 'package:altruity/screens/authentication_screen.dart';
 
@@ -18,11 +19,17 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (ctx) => Nonprofits(null, null, []),
-        ),
-        ChangeNotifierProvider(
           create: (ctx) => Auth(),
         ),
+        ChangeNotifierProxyProvider<Auth, Nonprofits>(
+            create: (ctx) => Nonprofits(null, null, []),
+            update: (ctx, auth, nonprof) => Nonprofits(auth.token, auth.userId,
+                nonprof == null ? [] : nonprof.nonprofits),
+          ),
+        ChangeNotifierProxyProvider<Auth, User>(
+            create: (ctx) => User(userId: null, name: null, email: null, profilePicture: null, ),
+            update: (ctx, auth, nonprof) => User(userId: auth.userId),
+          ),
       ],
       child: Consumer<Auth>(
         builder: (ctx, auth, _) => MaterialApp(
