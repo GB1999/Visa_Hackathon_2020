@@ -4,7 +4,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:carousel_slider/carousel_options.dart';
 
 import 'package:altruity/providers/nonprofits.dart';
-import 'package:altruity/screens/nonprofit_screen.dart';
+import 'package:altruity/screens/nonprofit_detail_screen.dart';
 import 'package:provider/provider.dart';
 
 class FeaturedCarousel extends StatefulWidget {
@@ -56,7 +56,7 @@ class _FeaturedCarouselState extends State<FeaturedCarousel> {
                 ),
                 Positioned(
                   bottom: 140,
-                  left: (MediaQuery.of(context).size.width-40)/2,
+                  left: (MediaQuery.of(context).size.width - 40) / 2,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: featuredNonprofits.map((nonprof) {
@@ -97,18 +97,15 @@ class _FeaturedCarouselState extends State<FeaturedCarousel> {
                     child: InkWell(
                       child: Container(
                         margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                        child:  Image.network(nonprof.coverPhoto,
-                              fit: BoxFit.cover,
-                              //height: 100,
-                              width: double.infinity),
-                        
+                        child: Image.network(nonprof.coverPhoto,
+                            fit: BoxFit.cover,
+                            //height: 100,
+                            width: double.infinity),
                       ),
                       onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    NonProfitScreen(nonprof)));
+                        Navigator.of(context).pushNamed(
+                            NonprofitDetailScreen.routeName,
+                            arguments: nonprof);
                       },
                     ),
                   ),

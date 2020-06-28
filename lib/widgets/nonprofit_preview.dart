@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
 import 'package:altruity/providers/nonprofit.dart';
-import 'package:altruity/screens/nonprofit_screen.dart';
+import 'package:altruity/screens/nonprofit_detail_screen.dart';
 
 class NonprofitPreview extends StatelessWidget {
   @override
@@ -12,10 +12,10 @@ class NonprofitPreview extends StatelessWidget {
     return Material(
       child: InkWell(
         onTap: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => NonProfitScreen(nonprofit)));
+          Navigator.of(context).pushNamed(
+            NonprofitDetailScreen.routeName,
+            arguments: nonprofit,
+          );
         },
         child: Container(
           width: double.infinity,
@@ -38,7 +38,8 @@ class NonprofitPreview extends StatelessWidget {
                             ),
                             Expanded(
                               child: Padding(
-                                padding: EdgeInsets.fromLTRB(10.0, 5.0, 0.0, 0.0),
+                                padding:
+                                    EdgeInsets.fromLTRB(10.0, 5.0, 0.0, 0.0),
                                 child: Container(
                                   alignment: Alignment.centerLeft,
                                   height: double.infinity,
@@ -74,7 +75,9 @@ class NonprofitPreview extends StatelessWidget {
                                                         10.0, 0.0, 10.0, 0.0),
                                                 child: Text(
                                                   nonprofit.tags[i],
-                                                  style: Theme.of(context).textTheme.subtitle2,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .subtitle2,
                                                 ),
                                               ),
                                               //margin: EdgeInsets.all(3.0),
@@ -91,8 +94,9 @@ class NonprofitPreview extends StatelessWidget {
                                         (nonprofit.expenditures != null)
                                             ? nonprofit.expenditures
                                             : " ",
-                                        style:
-                                            Theme.of(context).textTheme.subtitle1,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .subtitle1,
                                         maxLines: 3,
                                         overflow: TextOverflow.ellipsis,
                                       )

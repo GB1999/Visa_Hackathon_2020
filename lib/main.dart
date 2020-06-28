@@ -1,12 +1,19 @@
+import 'package:altruity/models/payment_method.dart';
 import 'package:altruity/providers/user.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:altruity/screens/discover_screen.dart';
+
 import 'package:altruity/providers/nonprofits.dart';
 import 'package:altruity/providers/user.dart';
 import 'package:altruity/providers/auth.dart';
 import 'package:altruity/screens/authentication_screen.dart';
+import 'package:altruity/screens/discover_screen.dart';
+import 'package:altruity/screens/payment_methods_screen.dart';
+import 'package:altruity/screens/user_profile_screen.dart';
+import 'package:altruity/screens/nonprofit_detail_screen.dart';
+import 'package:altruity/screens/donation_history_screen.dart';
+
 
 void main() {
   runApp(MyApp());
@@ -27,8 +34,8 @@ class MyApp extends StatelessWidget {
                 nonprof == null ? [] : nonprof.nonprofits),
           ),
         ChangeNotifierProxyProvider<Auth, User>(
-            create: (ctx) => User(userId: null, name: null, email: null, profilePicture: null, ),
-            update: (ctx, auth, nonprof) => User(userId: auth.userId),
+            create: (ctx) => User(null, null),
+            update: (ctx, auth, nonprof) => User(auth.userId, auth.token),
           ),
       ],
       child: Consumer<Auth>(
@@ -82,6 +89,14 @@ class MyApp extends StatelessWidget {
           ),
           // check if user is authenticated, if not send to authentication screen
           home: auth.isAuth ? DiscoverScreen() : AuthenticationScreen(),
+          routes: {
+            AuthenticationScreen.routeName: (ctx)=> AuthenticationScreen(),
+            DiscoverScreen.routeName: (ctx)=> DiscoverScreen(),
+            UserProfileScreen.routeName: (ctx)=> UserProfileScreen(),
+            DonationHistoryScreen.routeName: (ctx)=>DonationHistoryScreen(),
+            NonprofitDetailScreen.routeName: (ctx)=> NonprofitDetailScreen(),
+            PaymentMethodsScreen.routeName: (ctx)=> PaymentMethodsScreen(),
+          },
         ),
       ),
     );
