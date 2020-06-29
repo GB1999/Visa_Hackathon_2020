@@ -13,6 +13,7 @@ import 'package:altruity/screens/payment_methods_screen.dart';
 import 'package:altruity/screens/user_profile_screen.dart';
 import 'package:altruity/screens/nonprofit_detail_screen.dart';
 import 'package:altruity/screens/donation_history_screen.dart';
+import 'package:altruity/screens/payment_method_entry_screen.dart';
 
 
 void main() {
@@ -96,6 +97,7 @@ class MyApp extends StatelessWidget {
             DonationHistoryScreen.routeName: (ctx)=>DonationHistoryScreen(),
             NonprofitDetailScreen.routeName: (ctx)=> NonprofitDetailScreen(),
             PaymentMethodsScreen.routeName: (ctx)=> PaymentMethodsScreen(),
+            PaymentMethodEntryScreen.routeName: (ctx) =>PaymentMethodEntryScreen(),
           },
         ),
       ),

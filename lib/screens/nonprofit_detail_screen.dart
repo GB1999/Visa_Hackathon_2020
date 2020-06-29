@@ -20,8 +20,6 @@ import 'package:altruity/widgets/donation_selection.dart';
 class NonprofitDetailScreen extends StatefulWidget {
   static const routeName = '/nonprofit-detail';
   // the nonprofit selected from the previous screen is needed to pull the info from the Nonprofits list
-  
-  
 
   @override
   _NonprofitDetailScreenState createState() => _NonprofitDetailScreenState();
@@ -30,14 +28,17 @@ class NonprofitDetailScreen extends StatefulWidget {
 class _NonprofitDetailScreenState extends State<NonprofitDetailScreen> {
   @override
   Widget build(BuildContext context) {
-    final Nonprofit selected = ModalRoute.of(context).settings.arguments as Nonprofit;
+    final Nonprofit selected =
+        ModalRoute.of(context).settings.arguments as Nonprofit;
 
     return Material(
         child: SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          iconTheme: new IconThemeData(color: Colors.black38),
-          leading: BackButton(),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back, color:  Colors.black38),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
           backgroundColor: Colors.white,
           elevation: 1,
         ),
@@ -87,10 +88,8 @@ class _NonprofitDetailScreenState extends State<NonprofitDetailScreen> {
                         child: Padding(
                           padding:
                               const EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
-                          child: Text(
-                            selected.tags[i],
-                            style: Theme.of(context).textTheme.subtitle2
-                          ),
+                          child: Text(selected.tags[i],
+                              style: Theme.of(context).textTheme.subtitle2),
                         ),
                         //margin: EdgeInsets.all(3.0),
                         alignment: Alignment.center,
@@ -108,15 +107,13 @@ class _NonprofitDetailScreenState extends State<NonprofitDetailScreen> {
                   padding: const EdgeInsets.all(8.0),
                   child: SingleChildScrollView(
                     child: Text(
-                      //filler text to test scrolling
-                      //"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vestibulum nisi id accumsan sagittis. Praesent sit amet porta ipsum. Cras venenatis nec sem quis ullamcorper. Ut lectus massa, varius nec lorem sit amet, vulputate vehicula lectus. Pellentesque congue odio velit, non aliquet leo malesuada sed. Mauris eu erat in sem lobortis placerat. Nulla eget tincidunt nisi, eu molestie libero. Maecenas mattis dui quis augue molestie vestibulum. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Sed ultrices purus a erat viverra accumsan. Vestibulum semper, odio vitae ornare molestie, odio ligula vehicula ex, eu iaculis leo ante eu nulla. Cras velit sapien, imperdiet sit amet ligula id, pellentesque dapibus velit. Sed pulvinar eleifend leo quis bibendum. Curabitur sit amet eleifend libero. Duis in semper nisl. Aenean sit amet mauris in diam fringilla vehicula ac ut magna. Proin quis iaculis ex. Praesent egestas consectetur euismod. Interdum et malesuada fames ac ante ipsum primis in faucibus. Curabitur pharetra est ex. Sed vel rhoncus mauris. Fusce cursus, nisi non dictum commodo, ligula felis malesuada nisl, ut fermentum orci neque id nisi. Duis commodo elit et metus sollicitudin, vel euismod diam varius. Duis ornare aliquam massa ut tempor. Aenean id odio nec leo fringilla facilisis. Sed ornare turpis neque, eget posuere elit tristique at. Donec ut metus gravida, imperdiet nisl in, dictum magna. Vivamus libero nulla, vulputate eu ante at, pellentesque lacinia diam. Duis efficitur neque eu libero congue tincidunt. Morbi mollis efficitur felis in sodales. In nec purus commodo, cursus magna sit amet, ullamcorper enim. Donec nunc augue, placerat quis pretium sit amet, tincidunt quis diam. Donec porta et turpis quis vestibulum. Nulla vel orci vitae nulla egestas venenatis vel at diam. Nullam pellentesque risus at libero lobortis, sit amet tincidunt nisl semper. Cras eu hendrerit libero. In hac habitasse platea dictumst. Etiam eu porta lorem. Curabitur suscipit quam ac laoreet vestibulum. Cras molestie convallis est, sed condimentum ipsum malesuada ut. Curabitur rhoncus tristique laoreet. Pellentesque justo mi, ornare placerat mauris id, tincidunt pretium leo. Pellentesque tempus arcu rutrum magna scelerisque, in vulputate ex egestas. Duis suscipit cursus lorem eu rutrum."
-                      selected.description,
-                      style: Theme.of(context).textTheme.bodyText1
-                      ),
-                    ),
+                        //filler text to test scrolling
+                        //"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vestibulum nisi id accumsan sagittis. Praesent sit amet porta ipsum. Cras venenatis nec sem quis ullamcorper. Ut lectus massa, varius nec lorem sit amet, vulputate vehicula lectus. Pellentesque congue odio velit, non aliquet leo malesuada sed. Mauris eu erat in sem lobortis placerat. Nulla eget tincidunt nisi, eu molestie libero. Maecenas mattis dui quis augue molestie vestibulum. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Sed ultrices purus a erat viverra accumsan. Vestibulum semper, odio vitae ornare molestie, odio ligula vehicula ex, eu iaculis leo ante eu nulla. Cras velit sapien, imperdiet sit amet ligula id, pellentesque dapibus velit. Sed pulvinar eleifend leo quis bibendum. Curabitur sit amet eleifend libero. Duis in semper nisl. Aenean sit amet mauris in diam fringilla vehicula ac ut magna. Proin quis iaculis ex. Praesent egestas consectetur euismod. Interdum et malesuada fames ac ante ipsum primis in faucibus. Curabitur pharetra est ex. Sed vel rhoncus mauris. Fusce cursus, nisi non dictum commodo, ligula felis malesuada nisl, ut fermentum orci neque id nisi. Duis commodo elit et metus sollicitudin, vel euismod diam varius. Duis ornare aliquam massa ut tempor. Aenean id odio nec leo fringilla facilisis. Sed ornare turpis neque, eget posuere elit tristique at. Donec ut metus gravida, imperdiet nisl in, dictum magna. Vivamus libero nulla, vulputate eu ante at, pellentesque lacinia diam. Duis efficitur neque eu libero congue tincidunt. Morbi mollis efficitur felis in sodales. In nec purus commodo, cursus magna sit amet, ullamcorper enim. Donec nunc augue, placerat quis pretium sit amet, tincidunt quis diam. Donec porta et turpis quis vestibulum. Nulla vel orci vitae nulla egestas venenatis vel at diam. Nullam pellentesque risus at libero lobortis, sit amet tincidunt nisl semper. Cras eu hendrerit libero. In hac habitasse platea dictumst. Etiam eu porta lorem. Curabitur suscipit quam ac laoreet vestibulum. Cras molestie convallis est, sed condimentum ipsum malesuada ut. Curabitur rhoncus tristique laoreet. Pellentesque justo mi, ornare placerat mauris id, tincidunt pretium leo. Pellentesque tempus arcu rutrum magna scelerisque, in vulputate ex egestas. Duis suscipit cursus lorem eu rutrum."
+                        selected.description,
+                        style: Theme.of(context).textTheme.bodyText1),
                   ),
                 ),
-              
+              ),
 
               ///DONATION OPTIONS
               Padding(

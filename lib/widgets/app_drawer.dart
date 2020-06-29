@@ -30,8 +30,8 @@ class _AppDrawerState extends State<AppDrawer> {
   @override
   Widget build(BuildContext context) {
     final userData = Provider.of<User>(context, listen: true);
-    print(userData.profilePicture);
-    print(userData.name);
+    //print(userData.profilePicture);
+    //print(userData.name);
     //userData.fetchUserData();
     return ListView(
       //physics: const AlwaysScrollableScrollPhysics(),

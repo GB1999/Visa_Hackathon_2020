@@ -12,6 +12,14 @@ class UserProfileScreen extends StatelessWidget {
     // final transformConfig = Matrix4.rotationZ(-8 * pi / 180);
     // transformConfig.translate(-10.0);
     return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color:  Colors.black38),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        backgroundColor: Colors.white,
+          elevation: 1,
+      ),
       // resizeToAvoidBottomInset: false,
       body: Stack(
         children: <Widget>[

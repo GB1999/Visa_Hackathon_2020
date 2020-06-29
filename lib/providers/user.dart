@@ -110,7 +110,7 @@ class User with ChangeNotifier {
         );
       });
       _donationHistory = loadedDonationHistory;
-
+      
       extractedData["payment_methods"].forEach((method) {
         loadedPaymentMethods.add(
           PaymentMethod(
@@ -138,13 +138,33 @@ class User with ChangeNotifier {
     try {
       final response = await http.get(url);
       var extractedData = json.decode(response.body) as List<dynamic>;
+      var deletedIndex;
       extractedData.asMap().forEach(
         (index, method) {
-          if (method["card_number"] == cardNumber) {
+          if (method["card_number"] == cardNumber){
             print("Delete card at index ${index}");
+            deletedIndex = index;      
+          }
+          else {
+            return;
           }
         },
       );
+      var deleteUrl = 'https://visacharity.firebaseio.com/Users/${userId}/payment_methods/${deletedIndex}.json';
+            await http.delete(deleteUrl);
+      
+    } catch (error) {
+      throw (error);
+    }
+  }
+
+  Future<void> addNewPaymentMethod(PaymentMethod method) async{
+    //
+    var url =
+        'https://visacharity.firebaseio.com/Users/${userId}/payment_methods/${paymentMethods.length}.json';
+    try {
+      await http.put(url, body: method.toJson());
+      notifyListeners();
     } catch (error) {
       throw (error);
     }

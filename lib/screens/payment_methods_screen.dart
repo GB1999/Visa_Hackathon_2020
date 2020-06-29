@@ -1,3 +1,5 @@
+import 'package:altruity/screens/payment_method_entry_screen.dart';
+import 'package:altruity/widgets/payment_method_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:altruity/providers/user.dart';
@@ -9,28 +11,32 @@ class PaymentMethodsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        iconTheme: new IconThemeData(color: Colors.black38),
-        actions: <Widget>[
-          Align(
-            child: Text(
-              'Search',
-              style: TextStyle(color: Colors.black38),
-            ),
-            alignment: Alignment.center,
+      floatingActionButton:
+      Container(
+        padding: EdgeInsets.only(bottom: 50.0),
+        child: Align(
+          alignment: Alignment.bottomCenter,
+          child: FloatingActionButton.extended(
+            onPressed: (){
+              Navigator.of(context).pushNamed(
+            PaymentMethodEntryScreen.routeName,
+            arguments: PaymentMethod(cardHolder: '', cardNumber: ''),
+          );
+            },
+            label: Text("Add New Card"),
           ),
-          IconButton(
-            icon: Icon(
-              Icons.search,
-              color: Colors.black38,
-            ),
-            onPressed: () {},
-          ),
-        ],
-        backgroundColor: Colors.white,
-        elevation: 1,
+        ),
       ),
-      drawer: Drawer(child: AppDrawer()),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color:  Colors.black38),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        backgroundColor: Colors.white,
+          elevation: 1,
+      ),
+    
       body: FutureBuilder(
         future: Provider.of<User>(context, listen: false).fetchUserData(),
         builder: (ctx, dataSnapshot) {
@@ -41,90 +47,28 @@ class PaymentMethodsScreen extends StatelessWidget {
               return Center(child: Text('An error occured'));
             } else {
               return Consumer<User>(
-                builder: (ctx, userData, child) => ListView.builder(
-                  itemBuilder: (context, index) => PaymentMethodTile(
-                      userData.paymentMethods[index], context),
-                  itemCount: userData.paymentMethods.length,
-                ),
+                builder: (ctx, userData, child) =>
+                    userData.paymentMethods.isEmpty
+                        ? Text('Please add a payment method')
+                        : Column(
+                            children: <Widget>[
+                              Text("Manage your Visa Cards to send donations"),
+                              Expanded(
+                                child: ListView.builder(
+                                  itemBuilder: (context, index) =>
+                                      PaymentMethodCard(
+                                          userData.paymentMethods[index]),
+                                  itemCount: userData.paymentMethods.length,
+                                ),
+                              ),
+                              //FloatingActionButton(child: Text('Add a Card'),onPressed: (){},)
+                            ],
+                          ),
               );
             }
           }
         },
       ),
-    );
-  }
-
-  Widget PaymentMethodTile(
-      PaymentMethod userPaymentMethod, BuildContext context) {
-    return Dismissible(
-      onDismissed: (direction) {
-        _showAlertDialog(context, userPaymentMethod.cardNumber);
-      },
-      key: Key(userPaymentMethod.cardNumber),
-      child: Card(
-        elevation: 10.0,
-        child: Center(
-          child: Column(
-            children: <Widget>[Text(userPaymentMethod.cardHolder)],
-          ),
-        ),
-      ),
-    );
-  }
-
-  _showAlertDialog(BuildContext context, String cardNumber) {
-    final scaffold = Scaffold.of(context);
-    // set up the buttons
-    Widget cancelButton = FlatButton(
-      child: Text("Cancel"),
-      onPressed: () async {
-        try {
-          await Provider.of<User>(context, listen: false)
-              .deletePaymentMethod(cardNumber);
-        } catch (error) {
-          scaffold.showSnackBar(
-            SnackBar(
-              content: Text('Deleting failed.'),
-            ),
-          );
-        }
-        Navigator.of(context).pop();
-      },
-    );
-    Widget continueButton = FlatButton(
-      child: Text("Continue"),
-      onPressed: () async {
-        try {
-          await Provider.of<User>(context, listen: false)
-              .deletePaymentMethod(cardNumber);
-        } catch (error) {
-          scaffold.showSnackBar(
-            SnackBar(
-              content: Text('Deleting failed.'),
-            ),
-          );
-        }
-        Navigator.of(context).pop();
-      },
-    );
-
-    // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
-      title: Text("Confirmation"),
-      content: Text(
-          "Are you sure you want to delete this card from your payment methods"),
-      actions: [
-        cancelButton,
-        continueButton,
-      ],
-    );
-
-    // show the dialog
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
     );
   }
 }

@@ -40,9 +40,11 @@ class Nonprofits with ChangeNotifier {
       _nonprofits = loadedNonprofits;
       notifyListeners();
     } catch (error) {
+      
       throw (error);
     }
   }
+
 
   List<Nonprofit> get nonprofits {
     return [..._nonprofits];
