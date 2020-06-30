@@ -171,7 +171,7 @@ class _DonationSelectionState extends State<DonationSelection> {
     AlertDialog alert = AlertDialog(
       title: Text("Confirmation"),
       content: Text(
-          "Are you sure you want to delete this card from your payment methods"),
+          "A donation of \$${amount} will be made to ${nonprofit.title}"),
       actions: [
         cancelButton,
         continueButton,

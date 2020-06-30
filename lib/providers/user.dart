@@ -17,6 +17,7 @@ class User with ChangeNotifier {
   String _lastName = '';
   String _password = '';
   String _profilePicture = '';
+  String _totalAmountDonated = '';
   List<PaymentMethod> _paymentMethods = [];
   List<Donation> _donationHistory = [];
   List<String> _interests = [];
@@ -37,6 +38,9 @@ class User with ChangeNotifier {
 
   String get profilePicture {
     return _profilePicture;
+  }
+  String get totalAmountDonated {
+    return _totalAmountDonated;
   }
 
   List<PaymentMethod> get paymentMethods {
@@ -107,6 +111,7 @@ class User with ChangeNotifier {
       _lastName = extractedData['last_name'];
 
       if(extractedData["donation_history"] != null){
+        _totalAmountDonated = extractedData['total_amount_donated'].toString();
         extractedData["donation_history"].forEach((donation) {
         loadedDonationHistory.add(
           Donation(
@@ -171,7 +176,9 @@ class User with ChangeNotifier {
   Future<void> makeDonation(PaymentMethod method, int amount, Nonprofit nonprofit) async{
     var url =
         'https://visacharity.firebaseio.com/Users/${userId}/donation_history/${donationHistory.length}.json';
-    Donation newDonation = Donation(amount: amount.toString(), charityId: nonprofit.id, dateDonated: DateTime.now().toString());
+    var date = DateTime.parse("${DateTime.now().toString()}");
+    var simpleDate = "${date.day}.${date.month}.${date.year}";
+    Donation newDonation = Donation(amount: amount.toString(), charityId: nonprofit.id, dateDonated: simpleDate);
     final donationJSON = newDonation.toJSON();
     try {
       await http.put(url, body: json.encode(donationJSON));

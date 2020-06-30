@@ -24,7 +24,7 @@ class _DonationHistoryScreenState extends State<DonationHistoryScreen> {
           onPressed: () => Navigator.of(context).pop(),
         ),
         backgroundColor: Colors.white,
-          elevation: 1,
+        elevation: 1,
       ),
       body: FutureBuilder(
         future: Provider.of<User>(context, listen: false).fetchUserData(),
@@ -36,23 +36,33 @@ class _DonationHistoryScreenState extends State<DonationHistoryScreen> {
               return Center(child: Text('An error occured'));
             } else {
               return Consumer<User>(
-                builder: (ctx, userData, child) =>
-                    userData.donationHistory.isEmpty
-                        ? Text('Make a donation to see it here')
-                        : Column(
+                builder: (ctx, userData, child) => userData
+                        .donationHistory.isEmpty
+                    ? Text('Make a donation to see it here')
+                    : Column(
+                        children: <Widget>[
+                          Stack(
                             children: <Widget>[
-                              Text("Donation History"),
-                              Expanded(
-                                child: ListView.builder(
-                                  itemBuilder: (context, index) =>
-                                      DonationInstanceCard(
-                                          userData.donationHistory[index]),
-                                  itemCount: userData.paymentMethods.length,
-                                ),
+                              
+                              Image.asset('assets/images/donation-bg.png'),
+                              Text(
+                                '\$${userData.totalAmountDonated}',
+                                style: Theme.of(context).textTheme.headline4,
                               ),
-                              //FloatingActionButton(child: Text('Add a Card'),onPressed: (){},)
                             ],
                           ),
+                          Text("Donation History"),
+                          Expanded(
+                            child: ListView.builder(
+                              itemBuilder: (context, index) =>
+                                  DonationInstanceCard(
+                                      userData.donationHistory[index]),
+                              itemCount: userData.paymentMethods.length,
+                            ),
+                          ),
+                          //FloatingActionButton(child: Text('Add a Card'),onPressed: (){},)
+                        ],
+                      ),
               );
             }
           }

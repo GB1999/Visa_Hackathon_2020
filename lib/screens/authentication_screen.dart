@@ -221,7 +221,10 @@ class _AuthCardState extends State<AuthCard> {
                                 ),
                         ),
                       )
-                    : Text('Welcome Back'),
+                    : Text(
+                        'Welcome Back',
+                        style: Theme.of(context).textTheme.headline2,
+                      ),
                 if (_authMode == AuthMode.Signup)
                   TextFormField(
                     decoration: InputDecoration(labelText: 'First Name'),
@@ -292,21 +295,20 @@ class _AuthCardState extends State<AuthCard> {
                 if (_isLoading)
                   CircularProgressIndicator()
                 else
-                  RaisedButton(
+                  FlatButton(
                     child:
-                        Text(_authMode == AuthMode.Login ? 'LOGIN' : 'SIGN UP'),
+                        Text(_authMode == AuthMode.Login ? 'LOGIN' : 'SIGN UP', ),
                     onPressed: _submit,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
                     padding:
                         EdgeInsets.symmetric(horizontal: 30.0, vertical: 8.0),
-                    color: Theme.of(context).primaryColor,
+                    color: Theme.of(context).primaryColorDark,
                     textColor: Theme.of(context).primaryTextTheme.button.color,
                   ),
                 FlatButton(
                   child: Text(
-                      '${_authMode == AuthMode.Login ? 'SIGNUP' : 'LOGIN'} INSTEAD'),
+                    '${_authMode == AuthMode.Login ? 'SIGNUP' : 'LOGIN'} INSTEAD',
+                    
+                  ),
                   onPressed: _switchAuthMode,
                   padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 4),
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,

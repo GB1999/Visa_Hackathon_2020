@@ -45,10 +45,10 @@ class DonationInstanceCard extends StatelessWidget {
                                       Align(
                                         alignment: Alignment.centerLeft,
                                         child: Text(
-                                          donation.amount,
+                                          '\$${donation.amount}',
                                           style: Theme.of(context)
                                               .textTheme
-                                              .headline2,
+                                              .headline1,
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
                                         ),
@@ -64,7 +64,7 @@ class DonationInstanceCard extends StatelessWidget {
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                       Text(
-                                         donation.dateDonated,
+                                         'Donated on ${donation.dateDonated}',
                               
                                         style: Theme.of(context)
                                             .textTheme
