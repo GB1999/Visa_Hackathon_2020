@@ -121,7 +121,7 @@ class _NonprofitDetailScreenState extends State<NonprofitDetailScreen> {
                   child: FlatButton(
                     color: Color.fromRGBO(247, 182, 0, 100),
                     child: Text('Donate Now'),
-                    onPressed: () => _showDonationOptions(),
+                    onPressed: () => _showDonationOptions(selected),
                   )
                   //DonationSelection(),
                   )
@@ -132,11 +132,11 @@ class _NonprofitDetailScreenState extends State<NonprofitDetailScreen> {
     ));
   }
 
-  void _showDonationOptions() {
+  void _showDonationOptions(Nonprofit selected) {
     showModalBottomSheet(
         context: context,
         builder: (context) {
-          return DonationSelection();
+          return DonationSelection(selected);
         });
   }
 }

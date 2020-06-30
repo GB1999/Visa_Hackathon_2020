@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:altruity/models/payment_method.dart';
 import 'package:altruity/models/donation.dart';
 import 'dart:convert';
+import 'dart:core';
 import 'dart:developer';
 
 class User with ChangeNotifier {
@@ -47,14 +48,19 @@ class User with ChangeNotifier {
   }
 
   Future<void> postNewUser(
-      String firstName, String lastName, String profilePicureURL) async {
-    var url = 'https://visacharity.firebaseio.com/Users/${userId}.json';
+      String newUserId,
+      String newUserFirstName,
+      String newUserLastName,
+      String newUserEmail,
+      String newUserPassword,
+      String profilePicureURL) async {
+    var url = 'https://visacharity.firebaseio.com/Users/${newUserId}.json';
     final newUserData = {
-      'user_ID': userId,
-      'first_name': firstName,
-      'last_name': lastName,
-      'email_address': email,
-      'password': _password,
+      'user_ID': newUserId,
+      'first_name': newUserFirstName,
+      'last_name': newUserLastName,
+      'email_address': newUserEmail,
+      'password': newUserPassword,
       'payment_methods': [],
       'total_amount_donated': 0,
       'donation_history': [],
@@ -63,7 +69,7 @@ class User with ChangeNotifier {
     };
 
     try {
-      final response = await http.post(url, body: json.encode(newUserData));
+      final response = await http.put(url, body: json.encode(newUserData));
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
 
       if (extractedData == null) {
@@ -98,9 +104,10 @@ class User with ChangeNotifier {
       _profilePicture = extractedData['profile_image'];
       _email = extractedData['email'];
       _firstName = extractedData['first_name'];
-      _lastName  = extractedData['last_name'];
+      _lastName = extractedData['last_name'];
 
-      extractedData["donation_history"].forEach((donation) {
+      if(extractedData["donation_history"] != null){
+        extractedData["donation_history"].forEach((donation) {
         loadedDonationHistory.add(
           Donation(
             amount: donation['amount'],
@@ -110,8 +117,10 @@ class User with ChangeNotifier {
         );
       });
       _donationHistory = loadedDonationHistory;
+      }
       
-      extractedData["payment_methods"].forEach((method) {
+      if(extractedData["payment_methods"] != null){
+        extractedData["payment_methods"].forEach((method) {
         loadedPaymentMethods.add(
           PaymentMethod(
             cardNumber: method['card_number'],
@@ -120,6 +129,8 @@ class User with ChangeNotifier {
         );
       });
       _paymentMethods = loadedPaymentMethods;
+      }
+      
 
       notifyListeners();
     } catch (error) {
@@ -141,24 +152,37 @@ class User with ChangeNotifier {
       var deletedIndex;
       extractedData.asMap().forEach(
         (index, method) {
-          if (method["card_number"] == cardNumber){
+          if (method["card_number"] == cardNumber) {
             print("Delete card at index ${index}");
-            deletedIndex = index;      
-          }
-          else {
+            deletedIndex = index;
+          } else {
             return;
           }
         },
       );
-      var deleteUrl = 'https://visacharity.firebaseio.com/Users/${userId}/payment_methods/${deletedIndex}.json';
-            await http.delete(deleteUrl);
-      
+      var deleteUrl =
+          'https://visacharity.firebaseio.com/Users/${userId}/payment_methods/${deletedIndex}.json';
+      await http.delete(deleteUrl);
     } catch (error) {
       throw (error);
     }
   }
 
-  Future<void> addNewPaymentMethod(PaymentMethod method) async{
+  Future<void> makeDonation(PaymentMethod method, int amount, Nonprofit nonprofit) async{
+    var url =
+        'https://visacharity.firebaseio.com/Users/${userId}/donation_history/${donationHistory.length}.json';
+    Donation newDonation = Donation(amount: amount.toString(), charityId: nonprofit.id, dateDonated: DateTime.now().toString());
+    final donationJSON = newDonation.toJSON();
+    try {
+      await http.put(url, body: json.encode(donationJSON));
+      notifyListeners();
+    }catch (error) {
+      throw (error);
+    }
+
+  }
+
+  Future<void> addNewPaymentMethod(PaymentMethod method) async {
     //
     var url =
         'https://visacharity.firebaseio.com/Users/${userId}/payment_methods/${paymentMethods.length}.json';

@@ -8,8 +8,10 @@ import 'package:altruity/widgets/app_drawer.dart';
 
 class PaymentMethodsScreen extends StatelessWidget {
   static const routeName = '/payment-methods';
+  
   @override
   Widget build(BuildContext context) {
+    Provider.of<User>(context, listen: false).fetchUserData();
     return Scaffold(
       floatingActionButton:
       Container(

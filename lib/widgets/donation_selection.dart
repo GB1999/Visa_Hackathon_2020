@@ -1,4 +1,8 @@
+import 'package:altruity/providers/nonprofit.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:altruity/providers/user.dart';
+import 'package:altruity/models/payment_method.dart';
 
 /*
 This widget appears on the Non-profit Screen to allow the user to select, confirm, and transfer their donation amount.
@@ -16,166 +20,170 @@ After two taps, the donation is processed.
   */
 
 class DonationSelection extends StatefulWidget {
+  var monthlyDonation = false;
+  var noPaymentMethods = false;
+  Nonprofit nonprofit;
+  DonationSelection(this.nonprofit);
   @override
   _DonationSelectionState createState() => _DonationSelectionState();
 }
 
 class _DonationSelectionState extends State<DonationSelection> {
-  var _selectionState = [
-    0,
-    0,
-    0,
-    0,
-    0
-  ]; //keeps track of the state of each option
-  var _index = 0; //keeps track of which option has been tapped
+  var _isInit = true;
+  void didChangeDependencies() {
+    if (_isInit) {
+      Provider.of<User>(context).fetchUserData();
+      // final userData = Provider.of<User>(context);
+      // if (userData.paymentMethods.isEmpty) {
+      //   widget.noPaymentMethods = true;
+      // } else {
+      //   widget.selectedPaymentMethod = userData.paymentMethods[0];
+      //   print(widget.selectedPaymentMethod.cardNumber);
+      // }
 
-  void _updateSelection(int index, int state) {
-    //'state' will either be 0, 1, or 2 (see "selection states" key for details)
-    setState(() {
-      //the index of the option last tapped is referenced in the widget to highlight the selected donation option and changed instruction text
-      _index = index;
-
-      //need to reset the selection state list to state 0 except for the option last tapped which will be updated to the next state
-      _selectionState = [0, 0, 0, 0, 0];
-      _selectionState[index] = state;
-    });
+      print('Provider data fetched');
+    }
+    _isInit = false;
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
   }
+
+  void _confirmDonation() {}
 
   @override
   Widget build(BuildContext context) {
+    final userData = Provider.of<User>(context, listen: true);
+    PaymentMethod selectedPaymentMethod = userData.paymentMethods[0];
     return Material(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          Text("Show your support:",
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              )),
-          _selectionState[_index] == 1
-              ? Text(
-                  "Tap amount again to confirm selection\n",
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontStyle: FontStyle.italic,
+      child: widget.noPaymentMethods
+          ? Center(
+              child: Text('Please add a payment method'),
+            )
+          : Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  Text("Donate Immediately",
+                      style: Theme.of(context).textTheme.headline1),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
+                    child: Row(
+                      children: <Widget>[
+                        Text(
+                          'Make it Monthly',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                        Checkbox(
+                          value: widget.monthlyDonation,
+                          onChanged: (_) {
+                            setState(() {
+                              widget.monthlyDonation = !widget.monthlyDonation;
+                              print(widget.monthlyDonation);
+                            });
+                          },
+                        )
+                      ],
+                    ),
                   ),
-                )
-              : Text(
-                  "Tap to select donation amount\n",
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontStyle: FontStyle.italic,
-                  ),
-                ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              // $5 DONATION OPTION
-              GestureDetector(
-                onTap: () {
-                  if (_selectionState[0] != 2) {
-                    _updateSelection(0, _selectionState[0] + 1);
-                  }
-                },
-                child: Container(
-                  child: Text("\$5",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
+                  Expanded(
+                    child: Container(
+                      width: double.infinity,
+                      height: 400,
+                      child: GridView.builder(
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: 8,
+                        gridDelegate:
+                            new SliverGridDelegateWithFixedCrossAxisCount(
+                          childAspectRatio: MediaQuery.of(context).size.width /
+                              (MediaQuery.of(context).size.height / 5),
+                          crossAxisCount: 2,
+                        ),
+                        itemBuilder: (BuildContext context, int index) {
+                          return InkWell(
+                            child: Container(
+                              height: 20,
+                              child: new Card(
+                                color: Theme.of(context).splashColor,
+                                elevation: 5.0,
+                                child: new Container(
+                                  alignment: Alignment.center,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: <Widget>[
+                                      Text('Donate \$${(index + 1) * 5} ',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline3),
+                                      Icon(
+                                        Icons.arrow_forward,
+                                        color: Colors.white,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            onTap: () async {
+                              await _showConfirmationDialog(context, selectedPaymentMethod, (index +1) * 5, widget.nonprofit);
+                            },
+                          );
+                        },
                       ),
-                      ),
-                  color: _selectionState[0] != 0
-                      ? Colors.amber[800]
-                      : Colors.white,
-                ),
-              ),
-              //$10 DONATION OPTION
-              GestureDetector(
-                onTap: () {
-                  if (_selectionState[1] != 2) {
-                    _updateSelection(1, _selectionState[1] + 1);
-                  }
-                },
-                child: Container(
-                  child: Text(
-                    "\$10",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                  color: _selectionState[1] != 0
-                      ? Colors.amber[800]
-                      : Colors.white,
-                ),
+                  FlatButton(
+                    child: Text(
+                        'Donating from Card ending in ${selectedPaymentMethod.cardNumber.substring(8)}'),
+                    onPressed: () {},
+                  )
+                ],
               ),
-              //$20 DONATION OPTION
-              GestureDetector(
-                onTap: () {
-                  if (_selectionState[2] != 2) {
-                    _updateSelection(2, _selectionState[2] + 1);
-                  }
-                },
-                child: Container(
-                  child: Text(
-                    "\$20",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  color: _selectionState[2] != 0
-                      ? Colors.amber[800]
-                      : Colors.white,
-                ),
-              ),
-              //$50 DONATION OPTION
-              GestureDetector(
-                onTap: () {
-                  if (_selectionState[3] != 2) {
-                    _updateSelection(3, _selectionState[3] + 1);
-                  }
-                },
-                child: Container(
-                  child: Text(
-                    "\$50",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  color: _selectionState[3] != 0
-                      ? Colors.amber[800]
-                      : Colors.white,
-                ),
-              ),
-              //MONTHLY DONATION OPTION
-              // TODO figure out how we want to implement the "monthly" payment option
-              GestureDetector(
-                onTap: () {
-                  if (_selectionState[4] != 2) {
-                    _updateSelection(4, _selectionState[4] + 1);
-                  }
-                },
-                child: Container(
-                  child: Text(
-                    "Monthly",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  color: _selectionState[4] != 0
-                      ? Colors.amber[800]
-                      : Colors.white,
-                ),
-              ),
-              // TODO add an option to donate a custom amount??
-            ],
-          ),
-        ],
-      ),
+            ),
+    );
+  }
+
+  _showConfirmationDialog(BuildContext context, PaymentMethod selectedPaymentMethod, int amount, Nonprofit nonprofit) {
+    // set up the buttons
+    Widget cancelButton = FlatButton(
+      child: Text("Cancel"),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+    Widget continueButton = FlatButton(
+      child: Text("Continue"),
+      onPressed: () async {
+        try {
+          await Provider.of<User>(context, listen: false)
+              .makeDonation(selectedPaymentMethod, amount, nonprofit);
+        } catch (error) {
+          print(error);
+        }
+        Navigator.of(context).pop();
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Confirmation"),
+      content: Text(
+          "Are you sure you want to delete this card from your payment methods"),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
     );
   }
 }

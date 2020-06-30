@@ -38,7 +38,7 @@ class _PaymentMethodCardState extends State<PaymentMethodCard> {
                     children: <Widget>[
                       Text(widget.method.cardHolder),
                       Text(
-                          "**** **** **** ${widget.method.cardNumber.substring(widget.method.cardNumber.length - 4)}"),
+                          "**** **** **** ${widget.method.cardNumber.substring(8)}"),
                     ],
                   ),
                 ),

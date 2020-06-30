@@ -123,8 +123,8 @@ class _PaymentMethodEntryScreenState extends State<PaymentMethodEntryScreen> {
                   else
                     RaisedButton(
                       child: Text('Submit'),
-                      onPressed: () {
-                        _submitPaymentMethod(existing);
+                      onPressed: () async {
+                        await _submitPaymentMethod(existing);
                         Navigator.of(context).pop();
                       },
                       shape: RoundedRectangleBorder(

@@ -34,9 +34,6 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
     final nonprofitData = Provider.of<Nonprofits>(context);
     final nonprofits = nonprofitData.nonprofits;
 
-    final userData = Provider.of<User>(context);
-    print(userData.userId);
-
     return SafeArea(
       child: Scaffold(
         drawer: Drawer(

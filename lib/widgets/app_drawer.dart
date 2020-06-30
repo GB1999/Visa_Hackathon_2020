@@ -29,6 +29,7 @@ class _AppDrawerState extends State<AppDrawer> {
 
   @override
   Widget build(BuildContext context) {
+    final authData = Provider.of<Auth>(context, listen: false);
     final userData = Provider.of<User>(context, listen: true);
     //print(userData.profilePicture);
     //print(userData.name);
@@ -110,14 +111,24 @@ class _AppDrawerState extends State<AppDrawer> {
           '/Privacy_Policy',
         ),
         Divider(),
-        customListTile(
-          context,
-          40,
-          'Sign Out',
-          Icons.exit_to_app,
-          -1.3,
-          AuthenticationScreen.routeName,
+        Container(
+      height: 40,
+      margin: EdgeInsets.all(10),
+      child: ListTile(
+        title: Text('Sign Out'),
+        leading: Padding(
+          padding: const EdgeInsets.fromLTRB(0, 2, 0, 0),
+          child: Icon(
+            Icons.exit_to_app,
+            size: 18,
+            color: Colors.black,
+          ),
         ),
+        onTap: () {
+          authData.signout();
+        },
+      ),
+    ),
       ],
     );
   }

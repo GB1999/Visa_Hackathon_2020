@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "508896557325",
+    "firebase_url": "https://visacharity.firebaseio.com",
+    "project_id": "visacharity",
+    "storage_bucket": "visacharity.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:508896557325:android:87ed018b6bede44c2fd844",
+        "android_client_info": {
+          "package_name": "com.example.altruity"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "508896557325-3cfnjebgmbf75t4um2jpf2m3ici4quof.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAKFLnsRI11gW60g6fHG9tlNnnZHKU4UEE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "508896557325-3cfnjebgmbf75t4um2jpf2m3ici4quof.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "508896557325-mtn3v3dv22k5hd4ldmf8e66rnp2tu3r5.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.VisaCharity"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

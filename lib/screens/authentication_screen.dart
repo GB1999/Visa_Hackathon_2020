@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:altruity/providers/auth.dart';
+import 'package:altruity/providers/user.dart';
 import 'package:altruity/models/http_exception.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 enum AuthMode { Signup, Login }
 
@@ -59,13 +61,29 @@ class _AuthCardState extends State<AuthCard> {
   final GlobalKey<FormState> _formKey = GlobalKey();
   AuthMode _authMode = AuthMode.Login;
   Map<String, String> _authData = {
+    'first_name': '',
+    'last_name': '',
     'email': '',
     'password': '',
   };
   File _image;
   var _isLoading = false;
   var _imageSelected = false;
+  String _uploadedFileURL;
   final _passwordController = TextEditingController();
+
+  Future<void> _uploadFile(String userId) async {
+    StorageReference storageReference =
+        FirebaseStorage(storageBucket: "gs://visacharity.appspot.com")
+            .ref()
+            .child('images/profile_images/${userId}}');
+    StorageUploadTask uploadTask = storageReference.putFile(_image);
+    await uploadTask.onComplete;
+    print('File Uploaded');
+    await storageReference.getDownloadURL().then((value) {
+      _uploadedFileURL = value;
+    });
+  }
 
   void _showErrorDialog(String message) {
     showDialog(
@@ -85,6 +103,8 @@ class _AuthCardState extends State<AuthCard> {
   }
 
   Future<void> _submit() async {
+    final authData = Provider.of<Auth>(context, listen: false);
+    final userData = Provider.of<User>(context, listen: false);
     if (!_formKey.currentState.validate()) {
       // Invalid!
       return;
@@ -96,16 +116,29 @@ class _AuthCardState extends State<AuthCard> {
     try {
       if (_authMode == AuthMode.Login) {
         // Log user in
-        await Provider.of<Auth>(context, listen: false).login(
+        await authData.login(
           _authData['email'],
           _authData['password'],
         );
       } else {
         // Sign user up
-        await Provider.of<Auth>(context, listen: false).signup(
+        await authData.signup(
           _authData['email'],
           _authData['password'],
-        ); 
+        );
+        await _uploadFile(authData.userId);
+        await userData.postNewUser(
+            authData.userId,
+            _authData["first_name"],
+            _authData["last_name"],
+            _authData["email"],
+            _authData["password"],
+            _uploadedFileURL);
+        print(_uploadedFileURL);
+        await authData.login(
+          _authData['email'],
+          _authData['password'],
+        );
       }
     } on HttpException catch (error) {
       var errorMessage = 'Authentication failed';
@@ -189,6 +222,32 @@ class _AuthCardState extends State<AuthCard> {
                         ),
                       )
                     : Text('Welcome Back'),
+                if (_authMode == AuthMode.Signup)
+                  TextFormField(
+                    decoration: InputDecoration(labelText: 'First Name'),
+                    //keyboardType: TextInputType.emailAddress,
+                    validator: (value) {
+                      if (value.isEmpty) {
+                        return 'Please enter a valid name';
+                      }
+                    },
+                    onSaved: (value) {
+                      _authData['first_name'] = value;
+                    },
+                  ),
+                if (_authMode == AuthMode.Signup)
+                  TextFormField(
+                    decoration: InputDecoration(labelText: 'Last Name'),
+                    //keyboardType: TextInputType.text,
+                    validator: (value) {
+                      if (value.isEmpty) {
+                        return 'Please enter a valid name';
+                      }
+                    },
+                    onSaved: (value) {
+                      _authData['last_name'] = value;
+                    },
+                  ),
                 TextFormField(
                   decoration: InputDecoration(labelText: 'E-Mail'),
                   keyboardType: TextInputType.emailAddress,
