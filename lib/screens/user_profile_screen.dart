@@ -130,7 +130,7 @@ class _UserProfileCardState extends State<UserProfileCard> {
                     padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
                     child: Text(
                       "Donated to ${widget.userData.donationHistory.length} NPO${widget.userData.donationHistory.length > 1 ? "s": ""}",
-                      style: Theme.of(context).textTheme.bodyText2,gith
+                      style: Theme.of(context).textTheme.bodyText2,
                     ),
                   ),
                   SizedBox(
