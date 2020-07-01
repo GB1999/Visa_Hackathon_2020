@@ -17,7 +17,7 @@ class User with ChangeNotifier {
   String _lastName = '';
   String _password = '';
   String _profilePicture = '';
-  String _totalAmountDonated = '';
+  String _totalAmountDonated = '0';
   List<PaymentMethod> _paymentMethods = [];
   List<Donation> _donationHistory = [];
   List<String> _interests = [];
@@ -39,6 +39,7 @@ class User with ChangeNotifier {
   String get profilePicture {
     return _profilePicture;
   }
+
   String get totalAmountDonated {
     return _totalAmountDonated;
   }
@@ -66,7 +67,7 @@ class User with ChangeNotifier {
       'email_address': newUserEmail,
       'password': newUserPassword,
       'payment_methods': [],
-      'total_amount_donated': 0,
+      'total_amount_donated': "0",
       'donation_history': [],
       'interests': [],
       'profile_image': profilePicureURL,
@@ -110,36 +111,54 @@ class User with ChangeNotifier {
       _firstName = extractedData['first_name'];
       _lastName = extractedData['last_name'];
 
-      if(extractedData["donation_history"] != null){
+      if (extractedData["donation_history"] != null) {
         _totalAmountDonated = extractedData['total_amount_donated'].toString();
+        //print(extractedData["donation_history"]);
         extractedData["donation_history"].forEach((donation) {
-        loadedDonationHistory.add(
-          Donation(
-            amount: donation['amount'],
-            dateDonated: donation['date_donated'],
-            charityId: donation['charity_id'],
-          ),
-        );
-      });
-      _donationHistory = loadedDonationHistory;
+          if (donation != null) {
+            loadedDonationHistory.add(
+              Donation(
+                amount: donation['amount'],
+                dateDonated: donation['date_donated'],
+                charityId: donation['charity_id'],
+              ),
+            );
+          }
+        });
+        _donationHistory = loadedDonationHistory;
       }
-      
-      if(extractedData["payment_methods"] != null){
-        extractedData["payment_methods"].forEach((method) {
-        loadedPaymentMethods.add(
-          PaymentMethod(
-            cardNumber: method['card_number'],
-            cardHolder: method['card_holder'],
-          ),
-        );
-      });
-      _paymentMethods = loadedPaymentMethods;
-      }
-      
 
+      if (extractedData["payment_methods"] != null) {
+        if (extractedData["payment_methods"] is Map) {
+          print('its not a list');
+          print(extractedData["payment_methods"].runtimeType);
+          extractedData["payment_methods"].forEach((index, method) {
+            loadedPaymentMethods.add(
+              PaymentMethod(
+                cardNumber: method['card_number'],
+                cardHolder: method['card_holder'],
+              ),
+            );
+          });
+        } else {
+          extractedData["payment_methods"].forEach((method) {
+            if (method != null) {
+              loadedPaymentMethods.add(
+                PaymentMethod(
+                  cardNumber: method['card_number'],
+                  cardHolder: method['card_holder'],
+                ),
+              );
+            }
+          });
+        }
+
+        _paymentMethods = loadedPaymentMethods;
+      }
+      print(userId);
       notifyListeners();
     } catch (error) {
-      throw (error);
+      print(error);
     }
   }
 
@@ -153,46 +172,69 @@ class User with ChangeNotifier {
         'https://visacharity.firebaseio.com/Users/${userId}/payment_methods.json';
     try {
       final response = await http.get(url);
-      var extractedData = json.decode(response.body) as List<dynamic>;
+      var extractedData = json.decode(response.body);
       var deletedIndex;
-      extractedData.asMap().forEach(
-        (index, method) {
-          if (method["card_number"] == cardNumber) {
-            print("Delete card at index ${index}");
-            deletedIndex = index;
-          } else {
-            return;
+      print(extractedData.length);
+      if (extractedData.runtimeType is Map) {
+        extractedData.forEach((index, method) {
+          if (method != null) {
+            if (method["card_number"] == cardNumber) {
+              print("Delete card at index ${index}");
+              deletedIndex = index;
+            }
           }
-        },
-      );
+        });
+      } else if (extractedData.length == 1) {
+        deletedIndex = 0;
+      } else {
+        extractedData.asMap().forEach(
+          (index, method) {
+            if (method != null) {
+              if (method["card_number"] == cardNumber) {
+                print("Delete card at index ${index}");
+                deletedIndex = index;
+              }
+            }
+          },
+        );
+      }
+
       var deleteUrl =
           'https://visacharity.firebaseio.com/Users/${userId}/payment_methods/${deletedIndex}.json';
       await http.delete(deleteUrl);
+      notifyListeners();
     } catch (error) {
       throw (error);
     }
   }
 
-  Future<void> makeDonation(PaymentMethod method, int amount, Nonprofit nonprofit) async{
+  Future<void> makeDonation(
+      PaymentMethod method, int amount, Nonprofit nonprofit) async {
     var url =
-        'https://visacharity.firebaseio.com/Users/${userId}/donation_history/${donationHistory.length}.json';
+        'https://visacharity.firebaseio.com/Users/${userId}/donation_history/${donationHistory.length + 1}.json';
+    var totalDonationURL =
+        'https://visacharity.firebaseio.com/Users/${userId}/total_amount_donated.json';
+    var newTotal = int.parse(totalAmountDonated) + amount;
     var date = DateTime.parse("${DateTime.now().toString()}");
     var simpleDate = "${date.day}.${date.month}.${date.year}";
-    Donation newDonation = Donation(amount: amount.toString(), charityId: nonprofit.id, dateDonated: simpleDate);
+    Donation newDonation = Donation(
+        amount: amount.toString(),
+        charityId: nonprofit.id,
+        dateDonated: simpleDate);
     final donationJSON = newDonation.toJSON();
     try {
       await http.put(url, body: json.encode(donationJSON));
+      await http.put(totalDonationURL, body: json.encode(newTotal));
       notifyListeners();
-    }catch (error) {
+    } catch (error) {
       throw (error);
     }
-
   }
 
   Future<void> addNewPaymentMethod(PaymentMethod method) async {
     //
     var url =
-        'https://visacharity.firebaseio.com/Users/${userId}/payment_methods/${paymentMethods.length}.json';
+        'https://visacharity.firebaseio.com/Users/${userId}/payment_methods/${paymentMethods.length + 1}.json';
     try {
       await http.put(url, body: method.toJson());
       notifyListeners();

@@ -21,7 +21,7 @@ class _FeaturedCarouselState extends State<FeaturedCarousel> {
   Widget build(BuildContext context) {
     final featuredNonprofitsData =
         Provider.of<Nonprofits>(context, listen: false);
-    final featuredNonprofits = featuredNonprofitsData.nonprofits;
+    final featuredNonprofits = featuredNonprofitsData.featuredNonprofits;
     return Material(
       child: Container(
         height: 400,

@@ -24,17 +24,20 @@ class Nonprofits with ChangeNotifier {
 
       final List<Nonprofit> loadedNonprofits = [];
       extractedData.forEach((nonprofId, nonprofData) {
-        loadedNonprofits.add(
+        if(nonprofData != null){
+          loadedNonprofits.add(
           Nonprofit(
             id: nonprofId,
             title: nonprofData['name'],
             description: nonprofData['description'],
             expenditures: nonprofData['money'],
             coverPhoto: nonprofData['coverPhoto'][0],
-            additionalPhotos: nonprofData['additionalPhotos'].cast<String>(),
+            additionalPhotos: nonprofData['additionalPhotos'] != null ? nonprofData['additionalPhotos'].cast<String>() : [""],
             tags: nonprofData['tags'].cast<String>(),
           ),
         );
+        }
+        
       });
 
       _nonprofits = loadedNonprofits;
@@ -48,6 +51,10 @@ class Nonprofits with ChangeNotifier {
 
   List<Nonprofit> get nonprofits {
     return [..._nonprofits];
+  }
+
+  List<Nonprofit> get featuredNonprofits{
+    return [..._nonprofits].sublist(0,4);
   }
 
   Nonprofit findById(String id) {

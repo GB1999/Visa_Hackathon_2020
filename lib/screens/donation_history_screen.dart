@@ -24,7 +24,7 @@ class _DonationHistoryScreenState extends State<DonationHistoryScreen> {
           onPressed: () => Navigator.of(context).pop(),
         ),
         backgroundColor: Colors.white,
-        elevation: 1,
+        elevation: 0,
       ),
       body: FutureBuilder(
         future: Provider.of<User>(context, listen: false).fetchUserData(),
@@ -39,30 +39,38 @@ class _DonationHistoryScreenState extends State<DonationHistoryScreen> {
                 builder: (ctx, userData, child) => userData
                         .donationHistory.isEmpty
                     ? Text('Make a donation to see it here')
-                    : Column(
-                        children: <Widget>[
-                          Stack(
-                            children: <Widget>[
-                              
-                              Image.asset('assets/images/donation-bg.png'),
-                              Text(
-                                '\$${userData.totalAmountDonated}',
-                                style: Theme.of(context).textTheme.headline4,
-                              ),
-                            ],
-                          ),
-                          Text("Donation History"),
-                          Expanded(
-                            child: ListView.builder(
-                              itemBuilder: (context, index) =>
-                                  DonationInstanceCard(
-                                      userData.donationHistory[index]),
-                              itemCount: userData.paymentMethods.length,
+                    : Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 0.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text('Donation History',
+                                  style: Theme.of(context).textTheme.headline1),
+                            Stack(
+                              children: <Widget>[
+                                
+                                Image.asset('assets/images/donation-bg.png'),
+                                Center(
+                                  child: Text(
+                                    '\$${userData.totalAmountDonated}',
+                                    style: Theme.of(context).textTheme.headline4,
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-                          //FloatingActionButton(child: Text('Add a Card'),onPressed: (){},)
-                        ],
-                      ),
+                            
+                            Expanded(
+                              child: ListView.builder(
+                                itemBuilder: (context, index) =>
+                                    DonationInstanceCard(
+                                        userData.donationHistory[index]),
+                                itemCount: userData.donationHistory.length,
+                              ),
+                            ),
+                            //FloatingActionButton(child: Text('Add a Card'),onPressed: (){},)
+                          ],
+                        ),
+                    ),
               );
             }
           }

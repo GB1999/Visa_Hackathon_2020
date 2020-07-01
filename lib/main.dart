@@ -1,8 +1,11 @@
 import 'package:altruity/models/payment_method.dart';
 import 'package:altruity/providers/user.dart';
+import 'package:altruity/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'dart:async';
 
+import 'package:shimmer/shimmer.dart';
 import 'package:altruity/providers/nonprofits.dart';
 import 'package:altruity/providers/user.dart';
 import 'package:altruity/providers/auth.dart';
@@ -18,8 +21,70 @@ void main() {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   // This widget is the root of your application.
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        body: SplashScreen(),
+      ),
+    );
+  }
+}
+
+class SplashScreen extends StatefulWidget {
+  @override
+  _SplashScreenState createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  @override
+  initState() {
+    super.initState();
+    new Timer(const Duration(seconds: 2), onClose);
+  }
+  void onClose() {
+    Navigator.of(context).pushReplacement(new PageRouteBuilder(
+        maintainState: true,
+        opaque: true,
+        pageBuilder: (context, _, __) => new Home(),
+        transitionDuration: const Duration(seconds: 2),
+        transitionsBuilder: (context, anim1, anim2, child) {
+          return new FadeTransition(
+            child: child,
+            opacity: anim1,
+          );
+        }));
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Center(
+        child: Container(
+          color: Colors.white,
+          child: Shimmer.fromColors(
+            period: Duration(milliseconds: 1500),
+            baseColor: Color.fromRGBO(26, 31, 113, 1),
+            highlightColor: Color.fromRGBO(247, 182, 0, 1),
+            child: Container(
+              padding: EdgeInsets.all(16.0),
+              child: Image.asset('assets/images/VISA-GIVES-logo.png'),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(

@@ -58,12 +58,12 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
             ),
           ],
           backgroundColor: Colors.white,
-          elevation: 1,
+          elevation: 0,
         ),
         body: RefreshIndicator(
           onRefresh: () async {
-            Provider.of<Nonprofits>(context).fetchNonProfits();
-            setState(() {});
+            
+            setState(() {Provider.of<Nonprofits>(context).fetchNonProfits();});
           },
           child: CustomScrollView(
             slivers: <Widget>[

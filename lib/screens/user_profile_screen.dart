@@ -126,10 +126,49 @@ class _UserProfileCardState extends State<UserProfileCard> {
                   ),
 
                   //Total NPOs
-                  Text(
-                    "Donated to ${widget.userData.donationHistory.length} NPOs",
-                    style:Theme.of(context).textTheme.bodyText2,
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
+                    child: Text(
+                      "Donated to ${widget.userData.donationHistory.length} NPO${widget.userData.donationHistory.length > 1 ? "s": ""}",
+                      style: Theme.of(context).textTheme.bodyText2,gith
+                    ),
                   ),
+                  SizedBox(
+                    height: 100,
+                    child: GridView.count(
+                      padding: const EdgeInsets.all(5),
+                      crossAxisCount: 2,
+                      childAspectRatio: MediaQuery.of(context).size.width /
+                              (MediaQuery.of(context).size.height / 10),
+                      children: <Widget>[
+                        FlatButton(
+                          onPressed: (){},
+                          child: Text(
+                            'Edit Profile',
+                            style: Theme.of(context).textTheme.bodyText1,
+                          ),
+                        ),
+                        FlatButton(
+                          child: Text(
+                            'Invite Friends',
+                            style: Theme.of(context).textTheme.bodyText1,
+                          ),
+                        ),
+                        FlatButton(
+                          child: Text(
+                            'Invite Friends',
+                            style: Theme.of(context).textTheme.bodyText1,
+                          ),
+                        ),
+                        FlatButton(
+                          child: Text(
+                            'Delete Account',
+                            style: Theme.of(context).textTheme.bodyText1,
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
 
                   //Account Options
                 ],

@@ -40,7 +40,7 @@ class _NonprofitDetailScreenState extends State<NonprofitDetailScreen> {
             onPressed: () => Navigator.of(context).pop(),
           ),
           backgroundColor: Colors.white,
-          elevation: 1,
+          elevation: 0,
         ),
         body: Padding(
           padding: const EdgeInsets.all(20.0),
@@ -119,8 +119,8 @@ class _NonprofitDetailScreenState extends State<NonprofitDetailScreen> {
               Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: FlatButton(
-                    color: Color.fromRGBO(247, 182, 0, 100),
-                    child: Text('Donate Now'),
+                    color: Theme.of(context).accentColor,
+                    child: Text('Donate Now', style: Theme.of(context).textTheme.bodyText1,),
                     onPressed: () => _showDonationOptions(selected),
                   )
                   //DonationSelection(),

@@ -128,7 +128,13 @@ class _DonationSelectionState extends State<DonationSelection> {
                               ),
                             ),
                             onTap: () async {
-                              await _showConfirmationDialog(context, selectedPaymentMethod, (index +1) * 5, widget.nonprofit);
+                              var userData = Provider.of<User>(context, listen: false);
+                              await _showConfirmationDialog(
+                                userData,
+                                  selectedPaymentMethod,
+                                  (index + 1) * 5,
+                                  widget.nonprofit);
+                                  Navigator.of(context).pop();
                             },
                           );
                         },
@@ -137,7 +143,7 @@ class _DonationSelectionState extends State<DonationSelection> {
                   ),
                   FlatButton(
                     child: Text(
-                        'Donating from Card ending in ${selectedPaymentMethod.cardNumber.substring(8)}'),
+                        'Donating from Card ending in ${selectedPaymentMethod.cardNumber.substring(selectedPaymentMethod.cardNumber.length-4)}'),
                     onPressed: () {},
                   )
                 ],
@@ -146,44 +152,37 @@ class _DonationSelectionState extends State<DonationSelection> {
     );
   }
 
-  _showConfirmationDialog(BuildContext context, PaymentMethod selectedPaymentMethod, int amount, Nonprofit nonprofit) {
+  _showConfirmationDialog(User userData,
+      PaymentMethod selectedPaymentMethod, int amount, Nonprofit nonprofit) {
     // set up the buttons
-    Widget cancelButton = FlatButton(
-      child: Text("Cancel"),
-      onPressed: () {
-        Navigator.of(context).pop();
-      },
-    );
-    Widget continueButton = FlatButton(
-      child: Text("Continue"),
-      onPressed: () async {
-        try {
-          await Provider.of<User>(context, listen: false)
-              .makeDonation(selectedPaymentMethod, amount, nonprofit);
-        } catch (error) {
-          print(error);
-        }
-        Navigator.of(context).pop();
-      },
-    );
-
-    // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
-      title: Text("Confirmation"),
-      content: Text(
-          "A donation of \$${amount} will be made to ${nonprofit.title}"),
-      actions: [
-        cancelButton,
-        continueButton,
-      ],
-    );
-
-    // show the dialog
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
+    return showDialog<void>(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Confirmation"),
+            content: Text(
+                "A donation of \$${amount} will be made to ${nonprofit.title}"),
+            actions: [
+              FlatButton(
+                child: Text("Cancel"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              FlatButton(
+                child: Text("Continue"),
+                onPressed: () async {
+                  try {
+                    await userData
+                        .makeDonation(selectedPaymentMethod, amount, nonprofit);
+                  } catch (error) {
+                    print(error);
+                  }
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        });
   }
 }
