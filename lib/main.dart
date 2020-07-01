@@ -1,119 +1,183 @@
+import 'package:altruity/models/payment_method.dart';
+import 'package:altruity/providers/user.dart';
+import 'package:altruity/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'dart:async';
 
-import 'package:altruity/screens/discover_screen.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:altruity/providers/nonprofits.dart';
-import 'package:altruity/providers/nonprofit.dart';
-
+import 'package:altruity/providers/user.dart';
+import 'package:altruity/providers/auth.dart';
+import 'package:altruity/screens/authentication_screen.dart';
+import 'package:altruity/screens/discover_screen.dart';
+import 'package:altruity/screens/payment_methods_screen.dart';
+import 'package:altruity/screens/user_profile_screen.dart';
+import 'package:altruity/screens/nonprofit_detail_screen.dart';
+import 'package:altruity/screens/donation_history_screen.dart';
+import 'package:altruity/screens/payment_method_entry_screen.dart';
 
 void main() {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   // This widget is the root of your application.
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        body: SplashScreen(),
+      ),
+    );
+  }
+}
+
+class SplashScreen extends StatefulWidget {
+  @override
+  _SplashScreenState createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  @override
+  initState() {
+    super.initState();
+    new Timer(const Duration(seconds: 2), onClose);
+  }
+  void onClose() {
+    Navigator.of(context).pushReplacement(new PageRouteBuilder(
+        maintainState: true,
+        opaque: true,
+        pageBuilder: (context, _, __) => new Home(),
+        transitionDuration: const Duration(seconds: 2),
+        transitionsBuilder: (context, anim1, anim2, child) {
+          return new FadeTransition(
+            child: child,
+            opacity: anim1,
+          );
+        }));
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Center(
+        child: Container(
+          color: Colors.white,
+          child: Shimmer.fromColors(
+            period: Duration(milliseconds: 1500),
+            baseColor: Color.fromRGBO(26, 31, 113, 1),
+            highlightColor: Color.fromRGBO(247, 182, 0, 1),
+            child: Container(
+              padding: EdgeInsets.all(16.0),
+              child: Image.asset('assets/images/VISA-GIVES-logo.png'),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-        providers: [
-          ChangeNotifierProvider(
-            create: (ctx) => Nonprofits(),
-          ),
-        ],
-        child: MaterialApp(
-          title: 'Flutter Demo',
+      providers: [
+        ChangeNotifierProvider(
+          create: (ctx) => Auth(),
+        ),
+        ChangeNotifierProxyProvider<Auth, Nonprofits>(
+          create: (ctx) => Nonprofits(null, null, []),
+          update: (ctx, auth, nonprof) => Nonprofits(auth.token, auth.userId,
+              nonprof == null ? [] : nonprof.nonprofits),
+        ),
+        ChangeNotifierProxyProvider<Auth, User>(
+          create: (ctx) => User(null, null),
+          update: (ctx, auth, nonprof) => User(auth.userId, auth.token),
+        ),
+      ],
+      child: Consumer<Auth>(
+        builder: (ctx, auth, _) => MaterialApp(
+          title: 'Visa Gives',
           theme: ThemeData(
-            
-            primarySwatch: Colors.blue,
-            
-            visualDensity: VisualDensity.adaptivePlatformDensity,
+            //primaryColor: Color.fromRGBO(26, 31, 113, 100),
+            accentColor: Color.fromRGBO(247, 182, 0, 1),
+            splashColor: Color.fromRGBO(27, 138, 241, 1),
+            primaryColorDark: Color.fromRGBO(26, 31, 113, 1),
+
+            fontFamily: 'OpenSans',
+
+            textTheme: TextTheme(
+              headline1: TextStyle(
+                color: Colors.black,
+                fontSize: 24,
+                fontFamily: 'Montserrat',
+                fontWeight: FontWeight.w700,
+              ),
+              headline2: TextStyle(
+                color: Colors.black,
+                fontSize: 20,
+                fontFamily: 'OpenSans',
+                fontWeight: FontWeight.w400,
+              ),
+              headline3: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                fontFamily: 'Montserrat',
+                fontWeight: FontWeight.w700,
+              ),
+              headline4: TextStyle(
+                color: Colors.black,
+                fontSize: 50,
+                fontFamily: 'Montserrat',
+                fontWeight: FontWeight.w700,
+              ),
+              bodyText1: TextStyle(
+                color: Colors.black,
+                fontSize: 16,
+                fontFamily: 'OpenSans',
+                fontWeight: FontWeight.w300,
+              ),
+              bodyText2: TextStyle(
+                fontSize: 20,
+                fontFamily: 'OpenSans',
+                fontWeight: FontWeight.w300,
+                color: Colors.black26,
+              ),
+              subtitle1: TextStyle(
+                fontSize: 12,
+                fontFamily: 'OpenSans',
+                fontWeight: FontWeight.w300,
+                color: Colors.black45,
+              ),
+              subtitle2: TextStyle(
+                fontSize: 12,
+                fontFamily: 'OpenSans',
+                fontWeight: FontWeight.w300,
+                color: Colors.black,
+              ),
+            ),
           ),
-          home: DiscoverScreen(),
-        ));
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
+          // check if user is authenticated, if not send to authentication screen
+          home: auth.isAuth ? DiscoverScreen() : AuthenticationScreen(),
+          routes: {
+            AuthenticationScreen.routeName: (ctx) => AuthenticationScreen(),
+            DiscoverScreen.routeName: (ctx) => DiscoverScreen(),
+            UserProfileScreen.routeName: (ctx) => UserProfileScreen(),
+            DonationHistoryScreen.routeName: (ctx) => DonationHistoryScreen(),
+            NonprofitDetailScreen.routeName: (ctx) => NonprofitDetailScreen(),
+            PaymentMethodsScreen.routeName: (ctx) => PaymentMethodsScreen(),
+            PaymentMethodEntryScreen.routeName: (ctx) =>
+                PaymentMethodEntryScreen(),
+          },
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }

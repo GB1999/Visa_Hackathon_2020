@@ -2,74 +2,111 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:altruity/providers/nonprofits.dart';
-import 'package:altruity/widgets/searchbar_header.dart';
+import 'package:altruity/providers/user.dart';
+import 'package:altruity/widgets/app_drawer.dart';
 import 'package:altruity/widgets/nonprofit_preview.dart';
 import 'package:altruity/widgets/featured_carousel.dart';
 
 class DiscoverScreen extends StatefulWidget {
+  static const routeName = '/discover-screen';
   @override
   _DiscoverScreenState createState() => _DiscoverScreenState();
 }
 
 class _DiscoverScreenState extends State<DiscoverScreen> {
+  var _isInit = true;
+
+  @override
+  void didChangeDependencies() {
+    if (_isInit) {
+      Provider.of<User>(context).fetchUserData();
+      Provider.of<Nonprofits>(context).fetchNonProfits();
+
+      print('Provider data fetched');
+    }
+    _isInit = false;
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+  }
+
   @override
   Widget build(BuildContext context) {
     final nonprofitData = Provider.of<Nonprofits>(context);
     final nonprofits = nonprofitData.nonprofits;
 
     return SafeArea(
-          child: Scaffold(
-        body: CustomScrollView(
-          slivers: <Widget>[
-            SliverPersistentHeader(
-              pinned: true,
-              floating: true,
-              delegate: SeachBarHeader(
-                minExtent: 75,
-                maxExtent: 125,
-              ),
-            ),
-            SliverList(
-              delegate: SliverChildListDelegate([FeaturedCarousel()]),
-            ),
-            SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (context, i) => ChangeNotifierProvider.value(
-                  value: nonprofits[i],
-                  child: NonprofitPreview(),
-                ),
-                childCount: nonprofits.length,
-              ),
-            ),
-          ],
+      child: Scaffold(
+        drawer: Drawer(
+          child: AppDrawer()
         ),
-        bottomNavigationBar: BottomNavigationBar(
-          items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              title: Text('Home'),
+        appBar: AppBar(
+          iconTheme: new IconThemeData(color: Colors.black38),
+          actions: <Widget>[
+            Align(
+              child: Text(
+                'Search',
+                style: TextStyle(color: Colors.black38),
+              ),
+              alignment: Alignment.center,
             ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.business),
-              title: Text('Business'),
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.school),
-              title: Text('School'),
+            IconButton(
+              icon: Icon(
+                Icons.search,
+                color: Colors.black38,
+              ),
+              onPressed: () {},
             ),
           ],
-          currentIndex: _selectedIndex,
-          selectedItemColor: Colors.amber[800],
-          onTap: _onItemTapped,
+          backgroundColor: Colors.white,
+          elevation: 0,
+        ),
+        body: RefreshIndicator(
+          onRefresh: () async {
+            
+            setState(() {Provider.of<Nonprofits>(context).fetchNonProfits();});
+          },
+          child: CustomScrollView(
+            slivers: <Widget>[
+              SliverList(
+                delegate: SliverChildListDelegate([FeaturedCarousel()]),
+              ),
+              SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, i) => ChangeNotifierProvider.value(
+                    value: nonprofits[i],
+                    child: NonprofitPreview(),
+                  ),
+                  childCount: nonprofits.length,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  int _selectedIndex = 0;
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+  
+
+  Widget customListTile(double height, String title, IconData iconData,
+      double alignment, String routeName) {
+    return Container(
+      height: height,
+      margin: EdgeInsets.all(10),
+      child: ListTile(
+        title: Text(title),
+        leading: Padding(
+          padding: const EdgeInsets.fromLTRB(0, 2, 0, 0),
+          child: Icon(
+            iconData,
+            size: 18,
+            color: Colors.black,
+          ),
+        ),
+        onTap: () {
+          Navigator.pushNamed(context, routeName);
+        },
+      ),
+    );
   }
 }

@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
 import 'package:altruity/providers/nonprofit.dart';
+import 'package:altruity/screens/nonprofit_detail_screen.dart';
 
 class NonprofitPreview extends StatelessWidget {
   @override
@@ -10,32 +11,35 @@ class NonprofitPreview extends StatelessWidget {
     final nonprofit = Provider.of<Nonprofit>(context, listen: false);
     return Material(
       child: InkWell(
-        onDoubleTap: () {},
+        onTap: () {
+          Navigator.of(context).pushNamed(
+            NonprofitDetailScreen.routeName,
+            arguments: nonprofit,
+          );
+        },
         child: Container(
           width: double.infinity,
           child: Column(
             children: <Widget>[
-              Container(
-                height: 150,
-                width: double.infinity,
-                child: nonprofit.imageUrls.isNotEmpty
-                    ? Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Row(
+              Padding(
+                padding: EdgeInsets.fromLTRB(20.0, 5.0, 20.0, 0.0),
+                child: Container(
+                  height: 120,
+                  //width: double.infinity,
+                  child: nonprofit.coverPhoto.isNotEmpty
+                      ? Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: Image.network(
-                                nonprofit.imageUrls[0],
-                                width: 150,
-                                height: 100,
-                                fit: BoxFit.cover,
-                              ),
+                            Image.network(
+                              nonprofit.coverPhoto,
+                              width: 150,
+                              height: 100,
+                              fit: BoxFit.cover,
                             ),
                             Expanded(
                               child: Padding(
-                                padding: const EdgeInsets.all(20.0),
+                                padding:
+                                    EdgeInsets.fromLTRB(10.0, 5.0, 0.0, 0.0),
                                 child: Container(
                                   alignment: Alignment.centerLeft,
                                   height: double.infinity,
@@ -44,18 +48,18 @@ class NonprofitPreview extends StatelessWidget {
                                     children: <Widget>[
                                       Align(
                                         alignment: Alignment.centerLeft,
-                                                                              child: Text(
+                                        child: Text(
                                           nonprofit.title,
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 15,
-                                          ),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline2,
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                       ),
                                       Container(
-                                        margin: EdgeInsets.all(3.0),
+                                        margin: EdgeInsets.fromLTRB(
+                                            0.0, 3.0, 0.0, 0.0),
                                         width: 200,
                                         height: 20,
                                         child: ListView.builder(
@@ -71,7 +75,9 @@ class NonprofitPreview extends StatelessWidget {
                                                         10.0, 0.0, 10.0, 0.0),
                                                 child: Text(
                                                   nonprofit.tags[i],
-                                                  style: TextStyle(fontSize: 10),
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .subtitle2,
                                                 ),
                                               ),
                                               //margin: EdgeInsets.all(3.0),
@@ -83,6 +89,16 @@ class NonprofitPreview extends StatelessWidget {
                                             ),
                                           ),
                                         ),
+                                      ),
+                                      Text(
+                                        (nonprofit.expenditures != null)
+                                            ? nonprofit.expenditures
+                                            : " ",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .subtitle1,
+                                        maxLines: 3,
+                                        overflow: TextOverflow.ellipsis,
                                       )
                                     ],
                                   ),
@@ -90,14 +106,14 @@ class NonprofitPreview extends StatelessWidget {
                               ),
                             ),
                           ],
+                        )
+                      : Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(
+                            child: Text(nonprofit.description),
+                          ),
                         ),
-                      )
-                    : Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Container(
-                          child: Text(nonprofit.description),
-                        ),
-                      ),
+                ),
               ),
             ],
           ),
