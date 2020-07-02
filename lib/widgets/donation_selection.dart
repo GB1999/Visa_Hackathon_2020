@@ -23,6 +23,7 @@ class DonationSelection extends StatefulWidget {
   var monthlyDonation = false;
   var noPaymentMethods = false;
   Nonprofit nonprofit;
+  PaymentMethod selectedPaymentMethod;
   DonationSelection(this.nonprofit);
   @override
   _DonationSelectionState createState() => _DonationSelectionState();
@@ -30,6 +31,9 @@ class DonationSelection extends StatefulWidget {
 
 class _DonationSelectionState extends State<DonationSelection> {
   var _isInit = true;
+  var _isLoading = false;
+  var donationMessage = '';
+
   void didChangeDependencies() {
     if (_isInit) {
       Provider.of<User>(context).fetchUserData();
@@ -53,7 +57,7 @@ class _DonationSelectionState extends State<DonationSelection> {
   @override
   Widget build(BuildContext context) {
     final userData = Provider.of<User>(context, listen: true);
-    PaymentMethod selectedPaymentMethod = userData.paymentMethods[0];
+    widget.selectedPaymentMethod = userData.paymentMethods[0];
     return Material(
       child: widget.noPaymentMethods
           ? Center(
@@ -128,13 +132,14 @@ class _DonationSelectionState extends State<DonationSelection> {
                               ),
                             ),
                             onTap: () async {
-                              var userData = Provider.of<User>(context, listen: false);
+                              var userData =
+                                  Provider.of<User>(context, listen: false);
                               await _showConfirmationDialog(
-                                userData,
-                                  selectedPaymentMethod,
+                                  userData,
+                                  widget.selectedPaymentMethod,
                                   (index + 1) * 5,
                                   widget.nonprofit);
-                                  Navigator.of(context).pop();
+                              Navigator.of(context).pop(donationMessage);
                             },
                           );
                         },
@@ -143,8 +148,11 @@ class _DonationSelectionState extends State<DonationSelection> {
                   ),
                   FlatButton(
                     child: Text(
-                        'Donating from Card ending in ${selectedPaymentMethod.cardNumber.substring(selectedPaymentMethod.cardNumber.length-4)}'),
-                    onPressed: () {},
+                        'Donating from Card ending in ${widget.selectedPaymentMethod.cardNumber.substring(widget.selectedPaymentMethod.cardNumber.length - 4)}'),
+                    onPressed: () {
+                      var userData = Provider.of<User>(context, listen: false);
+                      _showCardSelectionDialog(userData);
+                    },
                   )
                 ],
               ),
@@ -152,37 +160,88 @@ class _DonationSelectionState extends State<DonationSelection> {
     );
   }
 
-  _showConfirmationDialog(User userData,
-      PaymentMethod selectedPaymentMethod, int amount, Nonprofit nonprofit) {
+  _showCardSelectionDialog(User userData) {
     // set up the buttons
     return showDialog<void>(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text("Confirmation"),
-            content: Text(
-                "A donation of \$${amount} will be made to ${nonprofit.title}"),
-            actions: [
-              FlatButton(
-                child: Text("Cancel"),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
+            title: Text("Select Card"),
+            content: Expanded(
+              child: ListView.builder(
+                itemBuilder: (context, index) =>
+                    customPaymentTile(userData.paymentMethods[index]),
+                itemCount: userData.paymentMethods.length,
               ),
-              FlatButton(
-                child: Text("Continue"),
-                onPressed: () async {
-                  try {
-                    await userData
-                        .makeDonation(selectedPaymentMethod, amount, nonprofit);
-                  } catch (error) {
-                    print(error);
-                  }
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
+            ),
           );
+        });
+  }
+
+  customPaymentTile(PaymentMethod method) {
+    return FlatButton(
+      onPressed: () {
+        setState(() {
+          widget.selectedPaymentMethod = method;
+        });
+        Navigator.of(context).pop();
+      },
+      child: Text(
+          "Card ending in ${method.cardNumber.substring(method.cardNumber.length - 4)}"),
+    );
+  }
+
+  _showConfirmationDialog(User userData, PaymentMethod selectedPaymentMethod,
+      int amount, Nonprofit nonprofit) {
+    // set up the buttons
+    return showDialog<void>(
+        context: context,
+        builder: (BuildContext context) {
+          return StatefulBuilder(builder: (context, setState) {
+            return AlertDialog(
+              title: Text("Confirmation"),
+              content: _isLoading
+                  ? SizedBox(
+                      child: Center(child: CircularProgressIndicator()),
+                      height: 50.0,
+                      width: 50.0,
+                    )
+                  : Text(
+                      "A donation of \$${amount} will be made to ${nonprofit.title}"),
+              actions: [
+                FlatButton(
+                  child: Text("Cancel"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                FlatButton(
+                  child: Text("Continue"),
+                  onPressed: () async {
+                    setState(() {
+                      _isLoading = true;
+                      print('now loading');
+                    });
+                    try {
+                      await userData.makeDonation(
+                          selectedPaymentMethod, amount, nonprofit);
+                      setState(() {
+                        donationMessage = "Donation Successful!";
+                      });
+                    } catch (error) {
+                      setState(() {
+                        donationMessage = "An error occured, try again";
+                      });
+                    }
+                    setState(() {
+                      _isLoading = false;
+                    });
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          });
         });
   }
 }

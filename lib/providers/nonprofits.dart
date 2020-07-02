@@ -6,6 +6,7 @@ import 'nonprofit.dart';
 
 class Nonprofits with ChangeNotifier {
   List<Nonprofit> _nonprofits = [];
+  List<Nonprofit> _searchResults = [];
 
   final String authToken;
   final String userId;
@@ -32,6 +33,8 @@ class Nonprofits with ChangeNotifier {
             description: nonprofData['description'],
             expenditures: nonprofData['money'],
             coverPhoto: nonprofData['coverPhoto'][0],
+            cardNumber: nonprofData['cardNumber'] != null ? nonprofData['cardNumber'].toString() : '0',
+            charityLink: nonprofData['charityLink'] != null ? nonprofData['charityLink'] : [""],
             additionalPhotos: nonprofData['additionalPhotos'] != null ? nonprofData['additionalPhotos'].cast<String>() : [""],
             tags: nonprofData['tags'].cast<String>(),
           ),
@@ -53,11 +56,29 @@ class Nonprofits with ChangeNotifier {
     return [..._nonprofits];
   }
 
+  List<Nonprofit> get searchResults {
+    return [..._searchResults];
+  }
+
   List<Nonprofit> get featuredNonprofits{
     return [..._nonprofits].sublist(0,4);
   }
 
   Nonprofit findById(String id) {
     return _nonprofits.firstWhere((nonprof) => nonprof.id == id);
+  }
+
+  Future<void> findByTag(String searchTag) {
+    List<Nonprofit> results = [];
+    _nonprofits.forEach((nonprof) {
+      nonprof.tags.forEach((tag) { 
+        print('tag');
+        if(searchTag.contains(tag)){
+          results.add(nonprof);
+        }
+      });
+    }
+    );
+    _searchResults = results;
   }
 }

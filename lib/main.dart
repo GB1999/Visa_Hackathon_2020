@@ -138,6 +138,12 @@ class Home extends StatelessWidget {
                 fontFamily: 'Montserrat',
                 fontWeight: FontWeight.w700,
               ),
+              headline5: TextStyle(
+                color: Colors.black,
+                fontSize: 16,
+                fontFamily: 'OpenSans',
+                fontWeight: FontWeight.w400,
+              ),
               bodyText1: TextStyle(
                 color: Colors.black,
                 fontSize: 16,

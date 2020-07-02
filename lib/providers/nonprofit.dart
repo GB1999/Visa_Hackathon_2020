@@ -10,10 +10,14 @@ class Nonprofit with ChangeNotifier {
   final String description;
   final String expenditures;
   final String coverPhoto;
+  String cardNumber;
+  String charityLink;
   final List<String> additionalPhotos;
   final List<String> tags;
 
   Nonprofit({
+    this.cardNumber,
+    this.charityLink,
     @required this.id,
     @required this.title,
     @required this.description,
@@ -21,7 +25,8 @@ class Nonprofit with ChangeNotifier {
     @required this.coverPhoto,
     @required this.additionalPhotos,
     @required this.tags,
-  });
+  }
+  );
 
   Future<void> makeDonation(
       double donationAmount, String token, String userId) async {

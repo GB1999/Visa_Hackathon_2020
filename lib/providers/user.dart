@@ -185,6 +185,7 @@ class User with ChangeNotifier {
           }
         });
       } else if (extractedData.length == 1) {
+
         deletedIndex = 0;
       } else {
         extractedData.asMap().forEach(
@@ -214,17 +215,40 @@ class User with ChangeNotifier {
         'https://visacharity.firebaseio.com/Users/${userId}/donation_history/${donationHistory.length + 1}.json';
     var totalDonationURL =
         'https://visacharity.firebaseio.com/Users/${userId}/total_amount_donated.json';
+    var visaAPI = 'http://visa-gives.herokuapp.com/donate/';
+
     var newTotal = int.parse(totalAmountDonated) + amount;
     var date = DateTime.parse("${DateTime.now().toString()}");
     var simpleDate = "${date.day}.${date.month}.${date.year}";
+
+    Map<String, dynamic> visaJSON = {
+      "amount": 100,
+      "senderPrimaryAccountNumber": method.cardNumber.toString(),
+      "senderCardExpiryDate": "2020-11",
+      "recipientPrimaryAccountNumber": nonprofit.cardNumber.toString(),
+      "recipientCardExpiryDate": "2020-11",
+    };
+    print('sending JSON object to API: $visaJSON' );
     Donation newDonation = Donation(
         amount: amount.toString(),
         charityId: nonprofit.id,
         dateDonated: simpleDate);
+
     final donationJSON = newDonation.toJSON();
     try {
       await http.put(url, body: json.encode(donationJSON));
       await http.put(totalDonationURL, body: json.encode(newTotal));
+
+      try{
+        final response = await http.post(visaAPI, body: json.encode(visaJSON));
+        var extractedData = json.decode(response.body) as Map<String, dynamic>;
+        print(extractedData);
+      }
+      catch(error){
+        print(error);
+      }
+      
+      
       notifyListeners();
     } catch (error) {
       throw (error);
@@ -234,9 +258,10 @@ class User with ChangeNotifier {
   Future<void> addNewPaymentMethod(PaymentMethod method) async {
     //
     var url =
-        'https://visacharity.firebaseio.com/Users/${userId}/payment_methods/${paymentMethods.length + 1}.json';
+        'https://visacharity.firebaseio.com/Users/${userId}/payment_methods/${paymentMethods.length == 0 ? 0 : paymentMethods.length  + 1}.json';
     try {
-      await http.put(url, body: method.toJson());
+      var response = await http.put(url, body: method.toJson());
+      print(response);
       notifyListeners();
     } catch (error) {
       throw (error);

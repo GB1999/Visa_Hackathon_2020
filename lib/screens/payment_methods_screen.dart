@@ -59,7 +59,7 @@ class PaymentMethodsScreen extends StatelessWidget {
               return Consumer<User>(
                 builder: (ctx, userData, child) => userData
                         .paymentMethods.isEmpty
-                    ? Text('Please add a payment method')
+                    ? Center(child: Text('Please add a payment method'))
                     : Padding(
                         padding: const EdgeInsets.fromLTRB(20, 10.0, 20, 0.0),
                         child: Column(

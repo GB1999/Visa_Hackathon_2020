@@ -23,6 +23,16 @@ class _DonationHistoryScreenState extends State<DonationHistoryScreen> {
           icon: Icon(Icons.arrow_back, color: Colors.black38),
           onPressed: () => Navigator.of(context).pop(),
         ),
+        actions: <Widget>[
+            IconButton(
+              icon: Icon(
+                Icons.file_download,
+                color: Colors.black38,
+              ),
+              onPressed: () {
+              },
+            ),
+          ],
         backgroundColor: Colors.white,
         elevation: 0,
       ),
@@ -38,7 +48,7 @@ class _DonationHistoryScreenState extends State<DonationHistoryScreen> {
               return Consumer<User>(
                 builder: (ctx, userData, child) => userData
                         .donationHistory.isEmpty
-                    ? Text('Make a donation to see it here')
+                    ? Center(child: Text('Make a donation to see it here'))
                     : Padding(
                       padding: const EdgeInsets.fromLTRB(20, 0, 20, 0.0),
                       child: Column(
@@ -46,17 +56,20 @@ class _DonationHistoryScreenState extends State<DonationHistoryScreen> {
                           children: <Widget>[
                             Text('Donation History',
                                   style: Theme.of(context).textTheme.headline1),
-                            Stack(
-                              children: <Widget>[
-                                
-                                Image.asset('assets/images/donation-bg.png'),
-                                Center(
-                                  child: Text(
-                                    '\$${userData.totalAmountDonated}',
-                                    style: Theme.of(context).textTheme.headline4,
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 20, 0, 20.0),
+                              child: Stack(
+                                children: <Widget>[
+                                  
+                                  Image.asset('assets/images/donation-bg.png'),
+                                  Center(
+                                    child: Text(
+                                      '\$${userData.totalAmountDonated}',
+                                      style: Theme.of(context).textTheme.headline4,
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                             
                             Expanded(

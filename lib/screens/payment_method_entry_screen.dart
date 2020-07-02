@@ -70,7 +70,7 @@ class _PaymentMethodEntryScreenState extends State<PaymentMethodEntryScreen> {
                     TextFormField(
                       decoration: InputDecoration(labelText: 'Card Holder'),
                       initialValue: existing.cardHolder,
-                      keyboardType: TextInputType.number,
+                      keyboardType: TextInputType.text,
                       //obscureText: true,
                       validator: (value) {
                         if (value.isEmpty) {
@@ -110,7 +110,7 @@ class _PaymentMethodEntryScreenState extends State<PaymentMethodEntryScreen> {
                     ),
                     TextFormField(
                         decoration: InputDecoration(labelText: 'CVV'),
-                        //obscureText: true,
+                        keyboardType: TextInputType.number,
                         validator: (value) {
                           if (value.isEmpty || value.length != 3) {
                             return 'Invalid CVV';

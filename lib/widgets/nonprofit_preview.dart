@@ -52,7 +52,7 @@ class NonprofitPreview extends StatelessWidget {
                                           nonprofit.title,
                                           style: Theme.of(context)
                                               .textTheme
-                                              .headline2,
+                                              .headline5,
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
                                         ),

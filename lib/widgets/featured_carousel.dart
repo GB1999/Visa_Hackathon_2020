@@ -16,6 +16,18 @@ class FeaturedCarousel extends StatefulWidget {
 
 class _FeaturedCarouselState extends State<FeaturedCarousel> {
   int _current = 0;
+  var _isInit = false;
+  @override
+  void didChangeDependencies() {
+    if (_isInit) {
+      Provider.of<Nonprofits>(context).fetchNonProfits();
+
+      print('Provider data fetched');
+    }
+    _isInit = false;
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {

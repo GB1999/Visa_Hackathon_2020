@@ -32,13 +32,11 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
   @override
   Widget build(BuildContext context) {
     final nonprofitData = Provider.of<Nonprofits>(context);
-    final nonprofits = nonprofitData.nonprofits;
+    var nonprofits = nonprofitData.nonprofits;
 
     return SafeArea(
       child: Scaffold(
-        drawer: Drawer(
-          child: AppDrawer()
-        ),
+        drawer: Drawer(child: AppDrawer()),
         appBar: AppBar(
           iconTheme: new IconThemeData(color: Colors.black38),
           actions: <Widget>[
@@ -54,7 +52,9 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                 Icons.search,
                 color: Colors.black38,
               ),
-              onPressed: () {},
+              onPressed: () {
+                showSearch(context: context, delegate: CustomSearchDelegate());
+              },
             ),
           ],
           backgroundColor: Colors.white,
@@ -62,8 +62,10 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
         ),
         body: RefreshIndicator(
           onRefresh: () async {
-            
-            setState(() {Provider.of<Nonprofits>(context).fetchNonProfits();});
+            setState(() {
+              Provider.of<Nonprofits>(context).fetchNonProfits();
+              nonprofits = nonprofitData.nonprofits;
+            });
           },
           child: CustomScrollView(
             slivers: <Widget>[
@@ -86,8 +88,6 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
     );
   }
 
-  
-
   Widget customListTile(double height, String title, IconData iconData,
       double alignment, String routeName) {
     return Container(
@@ -108,5 +108,85 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
         },
       ),
     );
+  }
+}
+
+class CustomSearchDelegate extends SearchDelegate {
+  @override
+  List<Widget> buildActions(BuildContext context) {
+    return [
+      IconButton(
+        icon: Icon(Icons.clear),
+        onPressed: () {
+          query = '';
+        },
+      ),
+    ];
+  }
+
+  @override
+  Widget buildLeading(BuildContext context) {
+    return IconButton(
+      icon: Icon(Icons.arrow_back),
+      onPressed: () {
+        close(context, null);
+      },
+    );
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    if (query.length < 3) {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Center(
+            child: Text(
+              "Search term must be longer than two letters.",
+            ),
+          )
+        ],
+      );
+    }
+
+    //Add the search term to the searchBloc.
+    //The Bloc will then handle the searching and add the results to the searchResults stream.
+    //This is the equivalent of submitting the search term to whatever search service you are using
+
+    return FutureBuilder(
+      future: Provider.of<Nonprofits>(context, listen: false).findByTag(query),
+      builder: (ctx, dataSnapshot) {
+        if (dataSnapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else {
+          if (dataSnapshot.error != null) {
+            return Center(child: Text('An error occured'));
+          } else {
+            return Consumer<Nonprofits>(
+              builder: (ctx, nonprofs, child) => nonprofs.searchResults.isEmpty
+                  ? Center(child: Text('No results found'))
+                  : Expanded(
+                      child: ListView.builder(
+                        itemBuilder: (context, index) =>
+                            ChangeNotifierProvider.value(
+                          value: nonprofs.searchResults[index],
+                          child: NonprofitPreview(),
+                        ),
+                        itemCount: nonprofs.searchResults.length,
+                      ),
+                    ),
+              //FloatingActionButton(child: Text('Add a Card'),onPressed: (){},)
+            );
+          }
+        }
+      },
+    );
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    // This method is called everytime the search term changes.
+    // If you want to add search suggestions as the user enters their search term, this is the place to do that.
+    return Column();
   }
 }
