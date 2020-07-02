@@ -185,7 +185,6 @@ class User with ChangeNotifier {
           }
         });
       } else if (extractedData.length == 1) {
-
         deletedIndex = 0;
       } else {
         extractedData.asMap().forEach(
@@ -228,7 +227,7 @@ class User with ChangeNotifier {
       "recipientPrimaryAccountNumber": nonprofit.cardNumber.toString(),
       "recipientCardExpiryDate": "2020-11",
     };
-    print('sending JSON object to API: $visaJSON' );
+    print('sending JSON object to API: $visaJSON');
     Donation newDonation = Donation(
         amount: amount.toString(),
         charityId: nonprofit.id,
@@ -239,16 +238,14 @@ class User with ChangeNotifier {
       await http.put(url, body: json.encode(donationJSON));
       await http.put(totalDonationURL, body: json.encode(newTotal));
 
-      try{
+      try {
         final response = await http.post(visaAPI, body: json.encode(visaJSON));
         var extractedData = json.decode(response.body) as Map<String, dynamic>;
         print(extractedData);
-      }
-      catch(error){
+      } catch (error) {
         print(error);
       }
-      
-      
+
       notifyListeners();
     } catch (error) {
       throw (error);
@@ -258,10 +255,17 @@ class User with ChangeNotifier {
   Future<void> addNewPaymentMethod(PaymentMethod method) async {
     //
     var url =
-        'https://visacharity.firebaseio.com/Users/${userId}/payment_methods/${paymentMethods.length == 0 ? 0 : paymentMethods.length  + 1}.json';
+        'https://visacharity.firebaseio.com/Users/${userId}/payment_methods/${paymentMethods.length == 0 ? 0 : paymentMethods.length + 1}.json';
+    var visaURL = 'https://visa-gives.herokuapp.com/create-alias/';
+
+    var visaJSON = {
+      "email": email,
+      "recipientPrimaryAccountNumber": "${method.cardNumber}"
+    };
+
     try {
-      var response = await http.put(url, body: method.toJson());
-      print(response);
+      await http.post(visaURL, body: json.encode(visaJSON));
+      await http.put(url, body: method.toJson());
       notifyListeners();
     } catch (error) {
       throw (error);
