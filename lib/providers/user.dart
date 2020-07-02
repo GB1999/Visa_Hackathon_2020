@@ -221,11 +221,9 @@ class User with ChangeNotifier {
     var simpleDate = "${date.day}.${date.month}.${date.year}";
 
     Map<String, dynamic> visaJSON = {
-      "amount": 100,
-      "senderPrimaryAccountNumber": method.cardNumber.toString(),
-      "senderCardExpiryDate": "2020-11",
-      "recipientPrimaryAccountNumber": nonprofit.cardNumber.toString(),
-      "recipientCardExpiryDate": "2020-11",
+      "amount": "25",
+      "senderEmail": "test",
+      "recipientEmail": "test"
     };
     print('sending JSON object to API: $visaJSON');
     Donation newDonation = Donation(
@@ -264,8 +262,9 @@ class User with ChangeNotifier {
     };
 
     try {
-      await http.post(visaURL, body: json.encode(visaJSON));
+      var response = await http.post(visaURL, body: json.encode(visaJSON));
       await http.put(url, body: method.toJson());
+      print(response);
       notifyListeners();
     } catch (error) {
       throw (error);
